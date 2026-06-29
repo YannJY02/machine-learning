@@ -6,6 +6,8 @@ This repo is for studying Hung-yi Lee's machine learning course and doing relate
 
 Use English for folder and file names. Notes may mix Chinese and English, but technical terms should be kept in English.
 Organize study units by course progress first, then add lightweight topic indexes only after enough material exists.
+Prefer official course pages and widely verified open-source references before creating a study unit from scratch.
+Use Machine Learning 2021 Spring as the core track. Use Machine Learning 2023 Spring as a GenAI extension after the matching core topics are covered.
 
 ## Data and output policy
 

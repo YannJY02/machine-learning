@@ -12,6 +12,26 @@ _Avoid_: Portfolio site, general ML template
 A reusable artifact produced from the study process, such as a note, exercise, experiment result, or review record.
 _Avoid_: Dump, archive
 
+**Resource Registry**:
+A curated list of upstream course pages, open-source repositories, and reference materials used to seed study units.
+_Avoid_: Link dump, database
+
+**Core Track**:
+The primary course version used to define study order, homework selection, and the minimum study loop. This repo uses Machine Learning 2021 Spring as the core track.
+_Avoid_: Only version, latest version
+
+**Extension Track**:
+A later course version used to add modern topics after the matching core topics are covered. This repo uses Machine Learning 2023 Spring as the GenAI extension track.
+_Avoid_: Parallel main track
+
+**Source Of Truth**:
+The official course page, assignment page, or sample-code repository used to verify lecture order, homework requirements, and original materials.
+_Avoid_: Random mirror
+
+**Reference Source**:
+A high-reputation open-source explanation, note, or aggregation used to support understanding after checking the source of truth.
+_Avoid_: Primary source
+
 **Dataset Reference**:
 A lightweight note that records where a dataset comes from and how to download or recreate it, instead of committing the full dataset.
 _Avoid_: Dataset copy
