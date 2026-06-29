@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local environments
+.env
+.env.*
+
+# Large ML artifacts
+data/raw/
+data/external/
+models/
+checkpoints/
+outputs/
+runs/
+wandb/
+mlruns/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+
+# System files
+.DS_Store

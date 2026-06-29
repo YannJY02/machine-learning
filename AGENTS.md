@@ -2,6 +2,15 @@
 
 This repo is for studying Hung-yi Lee's machine learning course and doing related exercises.
 
+## Study writing conventions
+
+Use English for folder and file names. Notes may mix Chinese and English, but technical terms should be kept in English.
+Organize study units by course progress first, then add lightweight topic indexes only after enough material exists.
+
+## Data and output policy
+
+Keep only small sample data, download notes, and curated experiment records in git. Do not commit large datasets, checkpoints, generated output batches, or long logs.
+
 ## Agent skills
 
 ### Issue tracker
