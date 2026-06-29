@@ -1,0 +1,1496 @@
+{
+  "course": "Machine Learning 2021 Spring",
+  "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.php",
+  "generated_from": "official course page",
+  "local_download_root": "resources/2021-spring/downloads",
+  "download_policy": "Download and index PDF resources only for slides and assignments. Keep notebooks, videos, Kaggle pages, and large datasets as links; ignore PPT/PPTX files.",
+  "lectures": [
+    {
+      "order": 1,
+      "title": "Introduction",
+      "slug": "introduction",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-English.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-Chinese.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression (v16).pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "video 1",
+          "url": "https://youtu.be/Ye018rCVvOo"
+        },
+        {
+          "label": "video 2",
+          "url": "https://youtu.be/bHcJCp2Fyxs"
+        },
+        {
+          "label": "video 1",
+          "url": "https://www.youtube.com/watch?v=Y87Ct23H3Kw"
+        },
+        {
+          "label": "video 2",
+          "url": "https://www.youtube.com/watch?v=O69EqgzUl9U"
+        }
+      ],
+      "homework_refs": [
+        "HW1"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Deep Learning",
+      "slug": "deep-learning",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/overfit-v6.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/small-gradient-v7.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/optimizer_v4.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/classification_v2.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=WeHM2xpYQpw"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/3qgKpBptyFY"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=QW6uINn7uGk"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/yz7QS1I6omw"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=zzbr1h9sF54"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/MNoEQ9w-AbE"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=HYUXEeh3kwY"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=8yf-tU7zm7w"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=O2VkP8dJ5FE"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=jqVONJ-Wn8w"
+        }
+      ],
+      "homework_refs": [
+        "HW2"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "CNN & Self-Attention",
+      "slug": "cnn-and-self-attention",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/pretest.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/cnn_v4.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/self_v7.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=OP5HcXJg2Aw"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=I4eLIsPM9Yc"
+        },
+        {
+          "label": "Chinese 1",
+          "url": "https://www.youtube.com/watch?v=hYdO9CscNes"
+        },
+        {
+          "label": "Chinese 2",
+          "url": "https://www.youtube.com/watch?v=gmsMY5kc-zw"
+        },
+        {
+          "label": "English 1",
+          "url": "https://www.youtube.com/watch?v=0djMUi2-uV4"
+        },
+        {
+          "label": "English 2",
+          "url": "https://www.youtube.com/watch?v=zeCDPYZli0k"
+        }
+      ],
+      "homework_refs": [
+        "HW3",
+        "HW4"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Theory of ML (Prof. Pei-Yuan Wu)",
+      "slug": "theory-of-ml-prof-pei-yuan-wu",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/W14_PAC-introduction.pdf"
+        }
+      ],
+      "videos": [],
+      "homework_refs": []
+    },
+    {
+      "order": 5,
+      "title": "Transformer",
+      "slug": "transformer",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/normalization_v4.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/seq2seq_v9.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=BABPWOkSbLE"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=t3u3WshJQV8"
+        },
+        {
+          "label": "Chinese 1",
+          "url": "https://www.youtube.com/watch?v=n9TlOhRjYoc"
+        },
+        {
+          "label": "Chinese 2",
+          "url": "https://youtu.be/N6aRv06iv2g"
+        },
+        {
+          "label": "English 1",
+          "url": "https://www.youtube.com/watch?v=zmOuJkH9l9M"
+        },
+        {
+          "label": "English 2",
+          "url": "https://www.youtube.com/watch?v=fPTj5Zh1ACo"
+        }
+      ],
+      "homework_refs": [
+        "HW5"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Generative Model",
+      "slug": "generative-model",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/gan_v10.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/4OWp0wDu6Xw"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=Mb9kddLfLRI"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/jNY1WBb8l4U"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=kFhv1I_fbZI"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=MP0BnVH2yOo"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=XcAmPtMQqS8"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/wulqhgnDr7E"
+        },
+        {
+          "label": "English",
+          "url": "https://youtube.com/watch?v=6xRAiKAYPxU"
+        }
+      ],
+      "homework_refs": [
+        "HW6"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Self-Supervised Learning",
+      "slug": "self-supervised-learning",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/bert_v8.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/auto_v8.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/e422eloJ0W4"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=mEcVirwmrkA"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/gh0hewYkjgo"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=L-ZQ-6vKOxU"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/ExXA05i8DEQ"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=L-ZQ-6vKOxU"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/WY_E0Sd4K80"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=6sAf24QvJEY"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/3oHlf8-J3Nc"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=E7wlA85RxcI"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/JZvEzb5PV3U"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=PsBHWq9KKqk"
+        }
+      ],
+      "homework_refs": [
+        "HW7",
+        "HW8"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Explainable AI / Adversarial Attack",
+      "slug": "explainable-ai-adversarial-attack",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/attack_v3.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/xai_v4.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/xGQKhbjrFRk"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=xw6K4naFWFg"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/z-Q9ia5H2Ig"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=kRmBiV2X810"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/WQY85vaQfTI"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=4rVD1EOaAX4"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/0ayIPqbdHYQ"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=5VPy7OGlGMQ"
+        }
+      ],
+      "homework_refs": [
+        "HW10",
+        "HW9"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Domain Adaptation",
+      "slug": "domain-adaptation",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/da_v6.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/Mnk_oUrgppM"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=8AKqH6V9kjE"
+        }
+      ],
+      "homework_refs": [
+        "HW11"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Privacy v.s. ML (Prof. Pei-Yuan Wu)",
+      "slug": "privacy-v-s-ml-prof-pei-yuan-wu",
+      "slides": [],
+      "videos": [],
+      "homework_refs": []
+    },
+    {
+      "order": 11,
+      "title": "RL",
+      "slug": "rl",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/drl_v5.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/XWukX-ayIrs"
+        },
+        {
+          "label": "English",
+          "url": "https://www.youtube.com/watch?v=0oucZNfBXlI"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/US8DFaAZcp4"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/jbN0oYLtXps"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/kk6DqWreLeU"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/Cf-WkM-Xef0"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/73YyF1gmIus"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/pibO_5JhQ4U"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/75rZwxKBAf0"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/9H3ShV57lHs"
+        }
+      ],
+      "homework_refs": [
+        "HW12"
+      ]
+    },
+    {
+      "order": 12,
+      "title": "Quantum ML (Prof. Hao-Chung Cheng)",
+      "slug": "quantum-ml-prof-hao-chung-cheng",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/GuestLecture_QML.pdf"
+        }
+      ],
+      "videos": [],
+      "homework_refs": []
+    },
+    {
+      "order": 13,
+      "title": "Life-Long/Compression",
+      "slug": "life-long-compression",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/life_v2.pdf"
+        },
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/tiny_v7.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/rWF9sg5w6Zk"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/yAX8Ydfek_I"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/Y9Jay_vxOsM"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/-2r4cqDP4BY"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/utk3EnAUh-g"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/CB0a3aBwND8"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/xrlbLPaq_Og"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/mGRdOGdOZ-4"
+        }
+      ],
+      "homework_refs": [
+        "HW13",
+        "HW14"
+      ]
+    },
+    {
+      "order": 14,
+      "title": "Meta Learning",
+      "slug": "meta-learning",
+      "slides": [
+        {
+          "label": "pdf",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/meta_v3.pdf"
+        }
+      ],
+      "videos": [
+        {
+          "label": "Chinese",
+          "url": "https://youtu.be/xoastiYx9JU"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/FmJ4T4k88jY"
+        },
+        {
+          "label": "Chinese",
+          "url": "https://www.youtube.com/watch?v=Q68Eh-wm1Ts"
+        },
+        {
+          "label": "English",
+          "url": "https://youtu.be/dgnUlFAZUo8"
+        }
+      ],
+      "homework_refs": [
+        "HW15"
+      ]
+    }
+  ],
+  "homework": [
+    {
+      "number": "x",
+      "title": "Colab Tutorial",
+      "slug": "colab-tutorial",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Colab/Google_Colab_Tutorial.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/Colab/Google_Colab_Tutorial.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/Colab/Google_Colab_Tutorial.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/Q4yskCCixhw"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/5v41Scv_ZEM"
+        }
+      ],
+      "date": "N/A",
+      "ta": "許湛然"
+    },
+    {
+      "number": "x",
+      "title": "Pytorch Tutorial",
+      "slug": "pytorch-tutorial",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_1.pdf"
+        },
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_2.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/Pytorch/Pytorch_Tutorial.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/Pytorch/Pytorch_Tutorial.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/CyV3zbcuufs"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/8DaeP2vSu90"
+        }
+      ],
+      "date": "N/A",
+      "ta": "張恆瑞、許湛然"
+    },
+    {
+      "number": "HW1",
+      "title": "Regression",
+      "slug": "hw1-regression",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW01/HW01.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW01/HW01.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW01/HW01.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/c/ml2021spring-hw1"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/7n3t_Yf2x6Q"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/Q4yskCCixhw"
+        }
+      ],
+      "date": "3/05~3/26",
+      "ta": "張恆瑞、許湛然"
+    },
+    {
+      "number": "HW2",
+      "title": "Classification",
+      "slug": "hw2-classification",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW02/HW02.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW02/HW02-1.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW02/HW02-1.ipynb"
+        },
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW02/HW02-2.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW02/HW02-2.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/c/ml2021spring-hw2"
+        },
+        {
+          "label": "",
+          "url": "https://cool.ntu.edu.tw/courses/4793/quizzes/8798"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/ESRr-VCykBs"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/PdjXnQbu2zo"
+        }
+      ],
+      "date": "3/12~4/02",
+      "ta": "孟妍、李威緒、陳宣叡、施貽仁"
+    },
+    {
+      "number": "HW3",
+      "title": "CNN",
+      "slug": "hw3-cnn",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW03/HW03.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW03/HW03.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW03/HW03.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/t/3040c87b4dfd7b68d415f215f16525df"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/80E56NgluMI"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/WhOek_gQna0"
+        }
+      ],
+      "date": "3/26~4/16",
+      "ta": "曾韋誠、黃健祐"
+    },
+    {
+      "number": "HW4",
+      "title": "Self-Attention",
+      "slug": "hw4-self-attention",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW04/HW04.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW04/HW04.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW04/HW04.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/t/859c9ca9ede14fdea841be627c412322"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/Gpz6AUvCak0"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/EPerg2UnGaI"
+        }
+      ],
+      "date": "3/26~4/16",
+      "ta": "黃子賢、林政豪"
+    },
+    {
+      "number": "HW5",
+      "title": "Transformer",
+      "slug": "hw5-transformer",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW05/HW05.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW05/HW05.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW05/HW05.ipynb"
+        },
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW05/HW05_ZH.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW05/HW05_ZH.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/1pjS5_L5REI"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/htG5WpZVQPU"
+        }
+      ],
+      "date": "4/09~4/30",
+      "ta": "蔡翔陞、張致強、曾韋誠、陳建成"
+    },
+    {
+      "number": "HW6",
+      "title": "GAN",
+      "slug": "hw6-gan",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW06/HW06.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW06/HW06.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW06/HW06.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/9tlvdue-9dA"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/RbFjXqL3Hio"
+        }
+      ],
+      "date": "4/16~5/14",
+      "ta": "陳延昊、吳宗翰"
+    },
+    {
+      "number": "HW7",
+      "title": "BERT",
+      "slug": "hw7-bert",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW07/HW07.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW07/HW07.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW07/HW07.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/c/ml2021-spring-hw7"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/SnqP5HnOBD8"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/DoZlp0vfDmI"
+        }
+      ],
+      "date": "4/30~5/21",
+      "ta": "李高迪、王昱凱"
+    },
+    {
+      "number": "HW8",
+      "title": "Anomaly Detection",
+      "slug": "hw8-anomaly-detection",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW08/HW08.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW08/HW08.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW08/HW08.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/c/ml2021spring-hw8"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/pKMJK2gldiI"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/xkpXP4byXqk"
+        }
+      ],
+      "date": "4/30~5/21",
+      "ta": "謝濬丞、王昱凱"
+    },
+    {
+      "number": "HW9",
+      "title": "Explainable AI",
+      "slug": "hw9-explainable-ai",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW09/HW09.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW09/HW09.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW09/HW09.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://www.youtube.com/watch?v=9j6PnN6hB84&list=PLJV_el3uVTsOzSTAjEJbLBw5N3LJl3hzK"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/cq-5wZT_Ibw"
+        }
+      ],
+      "date": "5/07~5/28",
+      "ta": "吳兩原、李高迪"
+    },
+    {
+      "number": "HW10",
+      "title": "Attack",
+      "slug": "hw10-attack",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW10/HW10.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW10/HW10.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW10/HW10.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/313TZsUDQ48"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/xWHpPEvkDiE"
+        }
+      ],
+      "date": "5/07~5/28",
+      "ta": "林毓宸、黃啟斌"
+    },
+    {
+      "number": "HW11",
+      "title": "Adaptation",
+      "slug": "hw11-adaptation",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW11/HW11.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW11/HW11_ZH.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW11/HW11_ZH.ipynb"
+        },
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW11/HW11_EN.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW11/HW11_EN.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/t/293cf7bbf6dd4ed2b86f8758f79dd55c"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/3B64TxGhZ54"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/eyDB-gSk7u8"
+        }
+      ],
+      "date": "5/21~6/11",
+      "ta": "Arvin Liu、陳子晴"
+    },
+    {
+      "number": "HW12",
+      "title": "RL",
+      "slug": "hw12-rl",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW12/HW12_EN.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW12/HW12_ZH.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW12/HW12_ZH.ipynb"
+        },
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW12/HW12_EN.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW12/HW12_EN.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/EnllW6UjYtI"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/9TksSERlLHA"
+        }
+      ],
+      "date": "6/04~6/25",
+      "ta": "王式珩、許湛然、陳建成、蔡翔陞"
+    },
+    {
+      "number": "HW13",
+      "title": "Compression",
+      "slug": "hw13-compression",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW13/HW13.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW13/HW13.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW13/HW13.ipynb"
+        }
+      ],
+      "platforms": [
+        {
+          "label": "",
+          "url": "https://www.kaggle.com/c/ml2021spring-hw13"
+        }
+      ],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/VnAAMj-xlAY"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/-RZ6Lyqg1_c"
+        }
+      ],
+      "date": "6/11~7/02",
+      "ta": "Arvin Liu、田昀曜"
+    },
+    {
+      "number": "HW14",
+      "title": "Life-Long Learning",
+      "slug": "hw14-life-long-learning",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW14/HW14.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW14/HW14.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW14/HW14.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [
+        {
+          "label": "",
+          "url": "https://youtu.be/ITmtJoy2PfA"
+        }
+      ],
+      "videos_zh": [
+        {
+          "label": "",
+          "url": "https://youtu.be/VwiwRr1k8n8"
+        }
+      ],
+      "date": "6/11~7/02",
+      "ta": "紀伯翰、蘇軒"
+    },
+    {
+      "number": "HW15",
+      "title": "Meta Learning",
+      "slug": "hw15-meta-learning",
+      "assignment_slides": [
+        {
+          "label": "",
+          "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW15/HW15.pdf"
+        }
+      ],
+      "code": [
+        {
+          "label": "",
+          "url": "https://colab.research.google.com/github/ga642381/ML2021-Spring/blob/main/HW15/HW15.ipynb",
+          "raw_url": "https://raw.githubusercontent.com/ga642381/ML2021-Spring/main/HW15/HW15.ipynb"
+        }
+      ],
+      "platforms": [],
+      "videos_en": [],
+      "videos_zh": [],
+      "date": "6/18~7/09",
+      "ta": "黃冠博、陳建成、許湛然"
+    }
+  ],
+  "downloadables": [
+    {
+      "kind": "lecture_slide",
+      "title": "Introduction",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-English.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-English.pdf",
+      "path": "downloads/lectures/01-introduction/slides/introduction-2021-v6-English.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Introduction",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-Chinese.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/introduction-2021-v6-Chinese.pdf",
+      "path": "downloads/lectures/01-introduction/slides/introduction-2021-v6-Chinese.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Introduction",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression (v16).pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression (v16).pdf",
+      "path": "downloads/lectures/01-introduction/slides/regression_(v16).pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Deep Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/overfit-v6.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/overfit-v6.pdf",
+      "path": "downloads/lectures/02-deep-learning/slides/overfit-v6.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Deep Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/small-gradient-v7.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/small-gradient-v7.pdf",
+      "path": "downloads/lectures/02-deep-learning/slides/small-gradient-v7.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Deep Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/optimizer_v4.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/optimizer_v4.pdf",
+      "path": "downloads/lectures/02-deep-learning/slides/optimizer_v4.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Deep Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/classification_v2.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/classification_v2.pdf",
+      "path": "downloads/lectures/02-deep-learning/slides/classification_v2.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "CNN & Self-Attention",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/pretest.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/pretest.pdf",
+      "path": "downloads/lectures/03-cnn-and-self-attention/slides/pretest.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "CNN & Self-Attention",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/cnn_v4.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/cnn_v4.pdf",
+      "path": "downloads/lectures/03-cnn-and-self-attention/slides/cnn_v4.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "CNN & Self-Attention",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/self_v7.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/self_v7.pdf",
+      "path": "downloads/lectures/03-cnn-and-self-attention/slides/self_v7.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Theory of ML (Prof. Pei-Yuan Wu)",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/W14_PAC-introduction.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/W14_PAC-introduction.pdf",
+      "path": "downloads/lectures/04-theory-of-ml-prof-pei-yuan-wu/slides/W14_PAC-introduction.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Transformer",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/normalization_v4.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/normalization_v4.pdf",
+      "path": "downloads/lectures/05-transformer/slides/normalization_v4.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Transformer",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/seq2seq_v9.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/seq2seq_v9.pdf",
+      "path": "downloads/lectures/05-transformer/slides/seq2seq_v9.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Generative Model",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/gan_v10.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/gan_v10.pdf",
+      "path": "downloads/lectures/06-generative-model/slides/gan_v10.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Self-Supervised Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/bert_v8.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/bert_v8.pdf",
+      "path": "downloads/lectures/07-self-supervised-learning/slides/bert_v8.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Self-Supervised Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/auto_v8.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/auto_v8.pdf",
+      "path": "downloads/lectures/07-self-supervised-learning/slides/auto_v8.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Explainable AI / Adversarial Attack",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/attack_v3.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/attack_v3.pdf",
+      "path": "downloads/lectures/08-explainable-ai-adversarial-attack/slides/attack_v3.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Explainable AI / Adversarial Attack",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/xai_v4.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/xai_v4.pdf",
+      "path": "downloads/lectures/08-explainable-ai-adversarial-attack/slides/xai_v4.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Domain Adaptation",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/da_v6.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/da_v6.pdf",
+      "path": "downloads/lectures/09-domain-adaptation/slides/da_v6.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "RL",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/drl_v5.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/drl_v5.pdf",
+      "path": "downloads/lectures/11-rl/slides/drl_v5.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Quantum ML (Prof. Hao-Chung Cheng)",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/GuestLecture_QML.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/GuestLecture_QML.pdf",
+      "path": "downloads/lectures/12-quantum-ml-prof-hao-chung-cheng/slides/GuestLecture_QML.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Life-Long/Compression",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/life_v2.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/life_v2.pdf",
+      "path": "downloads/lectures/13-life-long-compression/slides/life_v2.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Life-Long/Compression",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/tiny_v7.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/tiny_v7.pdf",
+      "path": "downloads/lectures/13-life-long-compression/slides/tiny_v7.pdf"
+    },
+    {
+      "kind": "lecture_slide",
+      "title": "Meta Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/meta_v3.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/meta_v3.pdf",
+      "path": "downloads/lectures/14-meta-learning/slides/meta_v3.pdf"
+    },
+    {
+      "kind": "tutorial_slide",
+      "title": "Colab Tutorial",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Colab/Google_Colab_Tutorial.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Colab/Google_Colab_Tutorial.pdf",
+      "path": "downloads/tutorials/colab-tutorial/slides/Google_Colab_Tutorial.pdf"
+    },
+    {
+      "kind": "tutorial_slide",
+      "title": "Pytorch Tutorial",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_1.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_1.pdf",
+      "path": "downloads/tutorials/pytorch-tutorial/slides/Pytorch_Tutorial_1.pdf"
+    },
+    {
+      "kind": "tutorial_slide",
+      "title": "Pytorch Tutorial",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_2.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/Pytorch/Pytorch_Tutorial_2.pdf",
+      "path": "downloads/tutorials/pytorch-tutorial/slides/Pytorch_Tutorial_2.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Regression",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW01/HW01.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW01/HW01.pdf",
+      "path": "downloads/homework/hw1-regression/slides/HW01.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Classification",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW02/HW02.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW02/HW02.pdf",
+      "path": "downloads/homework/hw2-classification/slides/HW02.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "CNN",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW03/HW03.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW03/HW03.pdf",
+      "path": "downloads/homework/hw3-cnn/slides/HW03.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Self-Attention",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW04/HW04.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW04/HW04.pdf",
+      "path": "downloads/homework/hw4-self-attention/slides/HW04.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Transformer",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW05/HW05.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW05/HW05.pdf",
+      "path": "downloads/homework/hw5-transformer/slides/HW05.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "GAN",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW06/HW06.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW06/HW06.pdf",
+      "path": "downloads/homework/hw6-gan/slides/HW06.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "BERT",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW07/HW07.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW07/HW07.pdf",
+      "path": "downloads/homework/hw7-bert/slides/HW07.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Anomaly Detection",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW08/HW08.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW08/HW08.pdf",
+      "path": "downloads/homework/hw8-anomaly-detection/slides/HW08.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Explainable AI",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW09/HW09.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW09/HW09.pdf",
+      "path": "downloads/homework/hw9-explainable-ai/slides/HW09.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Attack",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW10/HW10.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW10/HW10.pdf",
+      "path": "downloads/homework/hw10-attack/slides/HW10.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Adaptation",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW11/HW11.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW11/HW11.pdf",
+      "path": "downloads/homework/hw11-adaptation/slides/HW11.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "RL",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW12/HW12_EN.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW12/HW12_EN.pdf",
+      "path": "downloads/homework/hw12-rl/slides/HW12_EN.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Compression",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW13/HW13.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW13/HW13.pdf",
+      "path": "downloads/homework/hw13-compression/slides/HW13.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Life-Long Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW14/HW14.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW14/HW14.pdf",
+      "path": "downloads/homework/hw14-life-long-learning/slides/HW14.pdf"
+    },
+    {
+      "kind": "homework_slide",
+      "title": "Meta Learning",
+      "source_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW15/HW15.pdf",
+      "download_url": "https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/hw/HW15/HW15.pdf",
+      "path": "downloads/homework/hw15-meta-learning/slides/HW15.pdf"
+    }
+  ]
+}

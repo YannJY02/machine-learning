@@ -16,6 +16,10 @@ _Avoid_: Dump, archive
 A curated list of upstream course pages, open-source repositories, and reference materials used to seed study units.
 _Avoid_: Link dump, database
 
+**Local Resource Mirror**:
+A git-ignored local copy of official downloadable course files, generated from a resource manifest.
+_Avoid_: Committed course archive
+
 **Core Track**:
 The primary course version used to define study order, homework selection, and the minimum study loop. This repo uses Machine Learning 2021 Spring as the core track.
 _Avoid_: Only version, latest version
