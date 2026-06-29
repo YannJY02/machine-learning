@@ -18,7 +18,7 @@ Checked: 2026-06-29
 
 ## Local Mirrors
 
-- [2021 Spring resources](./2021-spring/README.md): structured manifest and ignored local downloads for the core track.
+- [2021 Spring resources](./2021-spring/README.md): structured manifest, official GitHub mirror, ignored local PDF downloads, and ignored local exercise assets for the core track.
 
 ## Vetted Sources
 

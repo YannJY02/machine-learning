@@ -13,6 +13,8 @@ venv/
 data/raw/
 data/external/
 resources/2021-spring/downloads/
+resources/2021-spring/datasets/
+resources/2021-spring/upstream/
 models/
 checkpoints/
 outputs/

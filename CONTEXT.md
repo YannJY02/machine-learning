@@ -17,7 +17,7 @@ A curated list of upstream course pages, open-source repositories, and reference
 _Avoid_: Link dump, database
 
 **Local Resource Mirror**:
-A git-ignored local copy of official downloadable course files, generated from a resource manifest.
+A git-ignored local copy of official downloadable course files, exercise assets, datasets, or upstream repositories generated from a resource manifest.
 _Avoid_: Committed course archive
 
 **Core Track**:

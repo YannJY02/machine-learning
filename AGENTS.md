@@ -8,7 +8,7 @@ Use English for folder and file names. Notes may mix Chinese and English, but te
 Organize study units by course progress first, then add lightweight topic indexes only after enough material exists.
 Prefer official course pages and widely verified open-source references before creating a study unit from scratch.
 Use Machine Learning 2021 Spring as the core track. Use Machine Learning 2023 Spring as a GenAI extension after the matching core topics are covered.
-Keep structured course PDF downloads under `resources/2021-spring/downloads/`; this is a local mirror and must stay out of git.
+Keep structured course PDF downloads under `resources/2021-spring/downloads/`, exercise assets under `resources/2021-spring/datasets/`, and upstream mirrors under `resources/2021-spring/upstream/`; these are local mirrors and must stay out of git.
 
 ## Data and output policy
 
