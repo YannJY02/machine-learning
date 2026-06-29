@@ -57,5 +57,5 @@ Records of mistakes, open questions, fixes, and follow-up decisions from study o
 _Avoid_: Random notes
 
 **Study Unit**:
-A lecture or topic folder that reaches the minimum study loop: concept notes, runnable exercises, and review records. Use a course lecture as the default unit, split by topic only when a lecture is too broad, and organize units by course progress before adding topic indexes.
+A lecture or topic folder under `courses/ml2021-spring/units/` that reaches the minimum study loop: concept notes, assignment brief, runnable practice, and review records. Use a course lecture as the default unit, split by topic only when a lecture is too broad, and organize units by course progress before adding topic indexes.
 _Avoid_: Loose folder, topic dump

@@ -1,6 +1,6 @@
-# Exercise
+# Practice
 
-Use this folder for HW1 Regression runnable exercises.
+Use this folder for HW1 Regression runnable work.
 
 Start with a notebook for exploration. Add scripts only when code becomes reusable or needs repeated execution.
 
@@ -11,5 +11,7 @@ notebook.ipynb
 src/
 data/README.md
 ```
+
+Read full datasets from `resources/2021-spring/datasets/hw01/`. Keep only tiny samples or dataset notes here.
 
 Do not commit large datasets, checkpoints, output batches, or long logs.

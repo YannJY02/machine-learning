@@ -6,7 +6,7 @@ The primary goal is to support learning the lectures and completing related exer
 
 ## Structure
 
-- `lectures/`: study units organized by course progress.
+- `courses/`: active course tracks and study units.
 - `discussions/`: group discussion records and follow-ups.
 - `resources/`: vetted upstream course and reference sources.
 - `CONTEXT.md`: glossary for the repo's study language.
@@ -16,9 +16,10 @@ The primary goal is to support learning the lectures and completing related exer
 Each study unit should leave the minimum study loop:
 
 ```text
-lecture-001-topic-name/
+courses/ml2021-spring/units/001-topic-name/
 |-- notes.md
-|-- exercise/
+|-- assignment.md
+|-- practice/
 `-- review.md
 ```
 

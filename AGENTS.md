@@ -5,7 +5,7 @@ This repo is for studying Hung-yi Lee's machine learning course and doing relate
 ## Study writing conventions
 
 Use English for folder and file names. Notes may mix Chinese and English, but technical terms should be kept in English.
-Organize study units by course progress first, then add lightweight topic indexes only after enough material exists.
+Organize study units under `courses/ml2021-spring/units/` by course progress first, then add lightweight topic indexes only after enough material exists.
 Prefer official course pages and widely verified open-source references before creating a study unit from scratch.
 Use Machine Learning 2021 Spring as the core track. Use Machine Learning 2023 Spring as a GenAI extension after the matching core topics are covered.
 Keep structured course PDF downloads under `resources/2021-spring/downloads/`, exercise assets under `resources/2021-spring/datasets/`, and upstream mirrors under `resources/2021-spring/upstream/`; these are local mirrors and must stay out of git.
@@ -27,3 +27,15 @@ Use the default five-label triage vocabulary: `needs-triage`, `needs-info`, `rea
 ### Domain docs
 
 This repo uses a single-context domain-doc layout. See `docs/agents/domain.md`.
+
+## Study unit shape
+
+Use this minimum loop for each unit:
+
+```text
+courses/ml2021-spring/units/001-topic-name/
+|-- notes.md
+|-- assignment.md
+|-- practice/
+`-- review.md
+```
