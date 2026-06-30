@@ -12,9 +12,9 @@ venv/
 # Large ML artifacts
 data/raw/
 data/external/
-resources/2021-spring/downloads/
-resources/2021-spring/datasets/
-resources/2021-spring/upstream/
+resources/2021-spring/downloads
+resources/2021-spring/datasets
+resources/2021-spring/upstream
 models/
 checkpoints/
 outputs/
