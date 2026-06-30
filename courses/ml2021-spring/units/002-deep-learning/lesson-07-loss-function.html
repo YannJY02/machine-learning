@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML2021 Lesson 07: Loss Function for Classification</title>
+  <style>
+    :root {
+      --bg: #f7f8f4;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #61707f;
+      --line: #dfe6de;
+      --green: #157347;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --violet: #6d28d9;
+      --soft-green: #e9f7ef;
+      --soft-blue: #edf4ff;
+      --soft-amber: #fff4df;
+      --soft-red: #fff0f0;
+      --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #173527 0%, #244f6d 58%, #6d4116 100%);
+      color: #fff;
+      padding: 44px 24px 32px;
+    }
+
+    .hero-inner,
+    .shell {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #d7f7e8;
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4rem);
+    }
+
+    .hero p {
+      max-width: 900px;
+      margin: 16px 0 0;
+      color: #edf8f3;
+      font-size: 1.05rem;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 0.88rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 56px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.96rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid #edf1ee;
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.65rem;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid > *,
+    .card,
+    .step,
+    .term,
+    .callout {
+      min-width: 0;
+    }
+
+    .card,
+    .callout,
+    .term,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card h3,
+    .term h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 5px solid var(--green);
+      background: var(--soft-green);
+    }
+
+    .callout.warning {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .callout.danger {
+      border-left-color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+
+    .step {
+      min-height: 126px;
+      padding: 13px;
+      background: #fbfdfb;
+    }
+
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.96rem;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 2px 4px 2px 0;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .tag.green {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .tag.red {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef7f1;
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    details {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .visual {
+      width: 100%;
+      min-height: 230px;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .source-slide {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    .source-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e5ebe7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .source-slide figcaption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .term {
+      padding: 14px;
+      background: #fbfdfb;
+    }
+
+    .term strong {
+      color: var(--green);
+    }
+
+    .quiz {
+      counter-reset: quiz;
+    }
+
+    .quiz details {
+      counter-increment: quiz;
+    }
+
+    .quiz summary::before {
+      content: counter(quiz) ". ";
+      color: var(--green);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .flow,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 34px 18px 26px;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      section {
+        padding: 20px 16px;
+      }
+
+      table {
+        display: block;
+        border: 0;
+        background: transparent;
+      }
+
+      table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      table thead {
+        display: none;
+      }
+
+      table tr {
+        display: block;
+        margin: 12px 0;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      table td {
+        display: grid;
+        grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        padding: 9px 0;
+        border-bottom: 1px solid #edf1ee;
+        overflow-wrap: anywhere;
+      }
+
+      table td::before {
+        content: attr(data-label);
+        color: var(--green);
+        font-weight: 750;
+      }
+
+      table tr:last-child td {
+        border-bottom: 1px solid #edf1ee;
+      }
+
+      table td:last-child,
+      table tr:last-child td:last-child {
+        border-bottom: 0;
+      }
+
+      .source-pill {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Machine Learning 2021 Spring · Lesson 07</p>
+      <h1>Classification Loss: Softmax 与 Cross-Entropy 为什么要绑在一起</h1>
+      <p>
+        这节短课解决一个很实践的问题：做 classification 时，模型输出、label 表示、softmax 和 loss function
+        怎么接起来，为什么分类通常不用 MSE，而用 cross-entropy。
+      </p>
+      <div class="source-row" aria-label="local source files">
+        <a class="source-pill" href="slides/07-loss-classification-v2.pdf">Slide PDF: 07</a>
+        <a class="source-pill" href="transcripts/07-loss-function.md">Transcript: Lesson 07</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="Table of contents">
+      <strong>学习路线</strong>
+      <a href="#map">1. 这节课在解决什么</a>
+      <a href="#encoding">2. Class 不能随便编号</a>
+      <a href="#output">3. One-hot 与多输出</a>
+      <a href="#softmax">4. Softmax / Logit</a>
+      <a href="#loss">5. MSE vs Cross-Entropy</a>
+      <a href="#optimization">6. 为什么 MSE 难训练</a>
+      <a href="#practice">7. 实践判断表</a>
+      <a href="#quiz">8. 自测</a>
+      <a href="#glossary">9. 术语表</a>
+    </nav>
+
+    <main>
+      <section id="map">
+        <h2>1. 这节课在解决什么</h2>
+        <p class="lead">
+          这是 classification 的短版本。它不从 likelihood 的完整理论讲起，而是直接给你训练 neural network 时最常用的结构：
+          `logits -> softmax -> cross-entropy`。
+        </p>
+
+        <div class="flow" aria-label="lesson flow">
+          <div class="step">
+            <span class="num">1</span>
+            <strong>Label 怎么表示</strong>
+            <span>类别没有自然顺序时，不要把 class 直接编号成 1、2、3。</span>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <strong>One-hot vector</strong>
+            <span>用 `[1,0,0]`、`[0,1,0]` 这类向量表示 class。</span>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <strong>Network 多输出</strong>
+            <span>几个 classes，就输出几个 raw scores，也就是 logits。</span>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <strong>Softmax</strong>
+            <span>把 raw scores 转成 0 到 1、总和为 1 的分布。</span>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <strong>Cross-Entropy</strong>
+            <span>用更适合 classification optimization 的 loss。</span>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <strong>实用提醒：</strong>在 PyTorch 里，常用的 cross-entropy loss 已经把 softmax 逻辑放进去了。
+          如果你手动在 network 最后一层加 softmax，再交给 cross-entropy，可能等于重复处理。
+        </div>
+      </section>
+
+      <section id="encoding">
+        <h2>2. Class 不能随便编号</h2>
+        <p>
+          你可以把 classification 硬当 regression：输出一个 scalar，然后让 class 1、2、3 对应数字 1、2、3。
+          但这会偷偷引入“类别距离”的假设。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>编码方式</th>
+              <th>它暗示了什么</th>
+              <th>什么时候可能还可以</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="编码方式">`class 1 -> 1`, `class 2 -> 2`, `class 3 -> 3`</td>
+              <td data-label="它暗示了什么">class 1 比较接近 class 2，比较远离 class 3</td>
+              <td data-label="什么时候可能还可以">类别本身有顺序，例如一年级、二年级、三年级。</td>
+            </tr>
+            <tr>
+              <td data-label="编码方式">`class 1 -> [1,0,0]`, `class 2 -> [0,1,0]`</td>
+              <td data-label="它暗示了什么">类别之间没有默认远近关系</td>
+              <td data-label="什么时候可能还可以">多数普通 classification，如图片类别、地区类别、标签类别。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-07-loss-function/slide-03-classification-as-regression.png" alt="Original slide 3 comparing regression and classification as regression." loading="lazy">
+          <figcaption>PDF slide 3: 把 classification 当 regression 会暗示类别之间有距离或顺序。</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>判断规则：</strong>如果 class 编号只是人为标签，不代表真实大小或顺序，用 one-hot。
+          如果 label 本来就是有序等级，才考虑把它当连续或 ordinal 问题处理。
+        </div>
+      </section>
+
+      <section id="output">
+        <h2>3. One-hot 与 Network 多输出</h2>
+        <p>
+          如果有 3 个 classes，label `ŷ` 是 3 维 one-hot vector。模型也应该输出 3 个数值，
+          分别对应每个 class 的 raw score。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="one hot and multi output network">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"></path>
+            </marker>
+          </defs>
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">3 classes -> 3 outputs</text>
+          <rect x="80" y="102" width="150" height="76" rx="8" fill="#edf4ff" stroke="#2563eb"></rect>
+          <text x="121" y="134" font-size="17" fill="#2563eb" font-weight="700">input x</text>
+          <text x="103" y="158" font-size="14" fill="#5e6b76">feature vector</text>
+          <path d="M232 140 L335 140" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <rect x="350" y="82" width="180" height="116" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+          <text x="386" y="132" font-size="17" fill="#157347" font-weight="700">network</text>
+          <text x="374" y="158" font-size="14" fill="#5e6b76">shared hidden layers</text>
+          <path d="M532 140 L630 140" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <rect x="650" y="64" width="220" height="152" rx="8" fill="#fff4df" stroke="#b45309"></rect>
+          <text x="704" y="100" font-size="17" fill="#b45309" font-weight="700">raw outputs</text>
+          <text x="715" y="132" font-size="17" fill="#17212b">y1, y2, y3</text>
+          <text x="692" y="164" font-size="14" fill="#5e6b76">one score per class</text>
+          <text x="682" y="194" font-size="14" fill="#5e6b76">later called logits</text>
+        </svg>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-07-loss-function/slide-04-one-hot-single-output.png" alt="Original slide 4 showing class as one-hot vector and asking how to output multiple values." loading="lazy">
+            <figcaption>PDF slide 4: 先把 class 表示成 one-hot，并提出“怎么输出多个值”的问题。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-07-loss-function/slide-05-one-hot-multiple-output.png" alt="Original slide 5 showing a network outputting y1, y2, y3 for three classes." loading="lazy">
+            <figcaption>PDF slide 5: network 最后一层输出 `y1, y2, y3`，每个 class 一个 raw score。</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="softmax">
+        <h2>4. Softmax / Logit</h2>
+        <p>
+          Network 输出的 `y1, y2, y3` 可以是任意实数。为了和 one-hot label 对齐，
+          classification 通常会把 raw scores 通过 `softmax`，得到 `y'`。
+        </p>
+
+        <div class="formula">
+          y_i' = exp(y_i) / Σ_j exp(y_j)
+        </div>
+
+        <div class="grid three">
+          <div class="card">
+            <h3>范围</h3>
+            <p>每个 `y_i'` 都在 0 到 1 之间。</p>
+          </div>
+          <div class="card">
+            <h3>总和</h3>
+            <p>所有 `y_i'` 加起来等于 1，可以被当作 class distribution。</p>
+          </div>
+          <div class="card">
+            <h3>拉开差距</h3>
+            <p>通过 exponential，大的 raw score 和小的 raw score 差距会被放大。</p>
+          </div>
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="softmax example">
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Example: logits [3, 1, -3]</text>
+          <g transform="translate(80 84)">
+            <rect width="210" height="150" rx="8" fill="#edf4ff" stroke="#2563eb"></rect>
+            <text x="52" y="42" font-size="17" fill="#2563eb" font-weight="700">logits</text>
+            <text x="48" y="82" font-size="24" fill="#17212b">3</text>
+            <text x="96" y="82" font-size="24" fill="#17212b">1</text>
+            <text x="140" y="82" font-size="24" fill="#17212b">-3</text>
+            <text x="42" y="120" font-size="14" fill="#5e6b76">raw scores</text>
+          </g>
+          <path d="M300 160 L410 160" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(430 84)">
+            <rect width="220" height="150" rx="8" fill="#fff4df" stroke="#b45309"></rect>
+            <text x="36" y="42" font-size="17" fill="#b45309" font-weight="700">exp + normalize</text>
+            <text x="38" y="82" font-size="22" fill="#17212b">20</text>
+            <text x="93" y="82" font-size="22" fill="#17212b">2.7</text>
+            <text x="150" y="82" font-size="22" fill="#17212b">0.05</text>
+            <text x="42" y="120" font-size="14" fill="#5e6b76">positive values</text>
+          </g>
+          <path d="M660 160 L770 160" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(790 84)">
+            <rect width="130" height="150" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+            <text x="30" y="42" font-size="17" fill="#157347" font-weight="700">y'</text>
+            <text x="24" y="78" font-size="20" fill="#17212b">0.88</text>
+            <text x="24" y="108" font-size="20" fill="#17212b">0.12</text>
+            <text x="24" y="138" font-size="20" fill="#17212b">≈0</text>
+          </g>
+        </svg>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-07-loss-function/slide-06-softmax-after-network.png" alt="Original slide 6 showing classification network output passing through softmax." loading="lazy">
+            <figcaption>PDF slide 6: classification 中 `network -> y -> softmax -> y'` 的结构。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-07-loss-function/slide-07-softmax-details.png" alt="Original slide 7 showing softmax formula and a logits example." loading="lazy">
+            <figcaption>PDF slide 7: softmax 公式、logit 名称，以及 `[3, 1, -3]` 的例子。</figcaption>
+          </figure>
+        </div>
+
+        <div class="callout">
+          <strong>Binary classification:</strong>两个 classes 时，你常看到 `sigmoid`。课程提醒：two-class softmax 和 sigmoid 本质等价，
+          只是写法不同。
+        </div>
+      </section>
+
+      <section id="loss">
+        <h2>5. MSE vs Cross-Entropy</h2>
+        <p>
+          有了 `y'` 和 one-hot label `ŷ` 后，要定义两者距离。MSE 可以算，但 classification 更常用 `cross-entropy`。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Loss</th>
+              <th>公式直觉</th>
+              <th>分类实践</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Loss">Mean Square Error</td>
+              <td data-label="公式直觉">每一维差距平方后加起来</td>
+              <td data-label="分类实践">能用，但分类中常让 optimization 更难。</td>
+            </tr>
+            <tr>
+              <td data-label="Loss">Cross-Entropy</td>
+              <td data-label="公式直觉">`-Σ_i ŷ_i ln(y_i')`</td>
+              <td data-label="分类实践">classification 常用；minimize cross-entropy 等价于 maximize likelihood。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="formula">
+          MSE: e = Σ_i (ŷ_i - y_i')^2<br>
+          Cross-entropy: e = -Σ_i ŷ_i ln(y_i')
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-07-loss-function/slide-08-classification-loss.png" alt="Original slide 8 showing classification loss with MSE and cross entropy." loading="lazy">
+          <figcaption>PDF slide 8: classification loss 的两种选择：MSE 与 cross-entropy。</figcaption>
+        </figure>
+
+        <div class="callout warning">
+          <strong>PyTorch 注意：</strong>课程特别提醒，作业代码里可能找不到显式 softmax，
+          因为 cross-entropy loss 里已经内建相关处理。实际写代码时要确认 loss 期待的是 logits 还是 probabilities。
+        </div>
+      </section>
+
+      <section id="optimization">
+        <h2>6. 为什么 MSE 会让 Classification 难训练</h2>
+        <p>
+          这节课没有从 likelihood 理论证明，而是从 optimization 角度说明：
+          对分类来说，MSE 的 error surface 在“错得很离谱”的地方可能非常平坦，gradient 很小，训练起步慢甚至卡住。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 330" role="img" aria-label="MSE versus cross entropy optimization surface intuition">
+          <rect width="980" height="330" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Starting from very wrong prediction</text>
+          <g transform="translate(80 80)">
+            <rect width="360" height="190" rx="8" fill="#fff0f0" stroke="#b91c1c"></rect>
+            <text x="32" y="44" font-size="18" fill="#b91c1c" font-weight="700">MSE surface</text>
+            <path d="M42 130 C115 122, 178 118, 318 116" stroke="#b91c1c" stroke-width="7" fill="none" opacity="0.85"></path>
+            <circle cx="76" cy="128" r="9" fill="#17212b"></circle>
+            <text x="96" y="134" font-size="15" fill="#5e6b76">wrong but flat</text>
+            <text x="42" y="168" font-size="15" fill="#5e6b76">gradient ≈ 0, hard to move</text>
+          </g>
+          <g transform="translate(540 80)">
+            <rect width="360" height="190" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+            <text x="32" y="44" font-size="18" fill="#157347" font-weight="700">Cross-entropy surface</text>
+            <path d="M42 148 C112 132, 175 102, 318 56" stroke="#157347" stroke-width="7" fill="none" opacity="0.85"></path>
+            <circle cx="76" cy="140" r="9" fill="#17212b"></circle>
+            <path d="M92 136 L160 110" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+            <text x="174" y="114" font-size="15" fill="#5e6b76">has slope</text>
+            <text x="42" y="172" font-size="15" fill="#5e6b76">gradient gives a useful direction</text>
+          </g>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-07-loss-function/slide-09-mse-crossentropy-surface.png" alt="Original slide 9 showing MSE and cross entropy error surfaces for classification." loading="lazy">
+          <figcaption>PDF slide 9: MSE 左上角高 loss 区域很平，容易 stuck；cross-entropy 仍有坡度，较容易往正确方向走。</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>连接上一节：</strong>上一节说 optimizer 和 learning rate 会影响训练难度；这一节补上：
+          loss function 本身也会改变 error surface，所以也会影响 optimization。
+        </div>
+      </section>
+
+      <section id="practice">
+        <h2>7. 实践判断表</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>情况</th>
+              <th>更好的选择</th>
+              <th>原因</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="情况">普通多分类，类别无顺序</td>
+              <td data-label="更好的选择">One-hot / class index + cross-entropy</td>
+              <td data-label="原因">避免把类别编号当作距离。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">模型最后输出 raw scores</td>
+              <td data-label="更好的选择">称为 logits，交给 softmax 或 cross-entropy</td>
+              <td data-label="原因">logits 可任意大小，softmax 才变成 0 到 1 的分布。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">PyTorch 使用 cross-entropy</td>
+              <td data-label="更好的选择">通常传 logits，不手动先 softmax</td>
+              <td data-label="原因">课程指出 softmax 和 cross-entropy 在框架里常被绑在一起。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">分类训练用 MSE 起步很慢</td>
+              <td data-label="更好的选择">改用 cross-entropy</td>
+              <td data-label="原因">MSE 在错得离谱的区域可能 gradient 很小。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">二分类</td>
+              <td data-label="更好的选择">sigmoid 或 two-class softmax</td>
+              <td data-label="原因">课程说明两者本质等价，只是表达方式不同。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="quiz" class="quiz">
+        <h2>8. 自测</h2>
+        <details>
+          <summary>为什么把 class 直接编码成 1、2、3 可能有问题？</summary>
+          <p>因为这暗示 class 1 比较接近 class 2，比较远离 class 3；如果类别本身没有顺序，这个假设是错的。</p>
+        </details>
+        <details>
+          <summary>One-hot vector 解决了什么问题？</summary>
+          <p>它让每个 class 是一个独立位置，不默认类别之间有远近或大小关系。</p>
+        </details>
+        <details>
+          <summary>Softmax 的输入和输出分别是什么？</summary>
+          <p>输入是 logits，也就是任意实数 raw scores；输出是 0 到 1 之间、总和为 1 的 `y'`。</p>
+        </details>
+        <details>
+          <summary>Cross-entropy 和 likelihood 的关系是什么？</summary>
+          <p>在分类问题里，minimize cross-entropy 等价于 maximize likelihood，是同一件事的不同说法。</p>
+        </details>
+        <details>
+          <summary>为什么 MSE 不适合作为分类的默认 loss？</summary>
+          <p>从 optimization 角度，MSE 在高 loss、预测很错的区域可能很平，gradient 很小，模型不容易走向正确方向。</p>
+        </details>
+        <details>
+          <summary>为什么使用 cross-entropy 时要小心不要重复 softmax？</summary>
+          <p>因为常用框架的 cross-entropy 往往已经包含 softmax/log-softmax 相关处理；重复加 softmax 会改变训练行为。</p>
+        </details>
+      </section>
+
+      <section id="glossary">
+        <h2>9. 术语表</h2>
+        <div class="grid two">
+          <div class="term"><strong>Classification</strong>：输出类别的任务，不是输出连续数值。</div>
+          <div class="term"><strong>Regression</strong>：输出连续 scalar 的任务。</div>
+          <div class="term"><strong>Class</strong>：类别标签，例如 class 1、class 2、class 3。</div>
+          <div class="term"><strong>One-hot Vector</strong>：用一个位置为 1、其他位置为 0 的向量表示类别。</div>
+          <div class="term"><strong>Logit</strong>：softmax 前的 raw score，可以是任意实数。</div>
+          <div class="term"><strong>Softmax</strong>：把 logits 转成 0 到 1、总和为 1 的输出。</div>
+          <div class="term"><strong>Mean Square Error</strong>：平方误差；classification 中不是默认推荐。</div>
+          <div class="term"><strong>Cross-Entropy</strong>：classification 常用 loss，和 likelihood 最大化等价。</div>
+          <div class="term"><strong>Likelihood</strong>：从概率角度看模型解释数据的程度。</div>
+          <div class="term"><strong>Error Surface</strong>：参数或输出变化时 loss 的地形。</div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <p class="footer-note">
+          本页基于本地材料整理：`slides/07-loss-classification-v2.pdf` 与
+          `transcripts/07-loss-function.md`。PDF slide screenshots are local teaching assets under
+          `teaching-assets/lesson-07-loss-function/`.
+        </p>
+        <p class="footer-note">
+          Slide 中给出的长版分类课程参考视频包括：
+          <a href="https://youtu.be/fZAZUYEeIMg">classification long version 1</a>、
+          <a href="https://youtu.be/hSXFuypLukA">classification long version 2</a>。
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

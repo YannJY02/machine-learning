@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML2021 Lesson 08: Batch Normalization</title>
+  <style>
+    :root {
+      --bg: #f7f8f4;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #61707f;
+      --line: #dfe6de;
+      --green: #157347;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --soft-green: #e9f7ef;
+      --soft-blue: #edf4ff;
+      --soft-amber: #fff4df;
+      --soft-red: #fff0f0;
+      --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #173527 0%, #244f6d 58%, #6d4116 100%);
+      color: #fff;
+      padding: 44px 24px 32px;
+    }
+
+    .hero-inner,
+    .shell {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #d7f7e8;
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4rem);
+    }
+
+    .hero p {
+      max-width: 900px;
+      margin: 16px 0 0;
+      color: #edf8f3;
+      font-size: 1.05rem;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 0.88rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 56px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.96rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid #edf1ee;
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.65rem;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid > *,
+    .card,
+    .step,
+    .term,
+    .callout {
+      min-width: 0;
+    }
+
+    .card,
+    .callout,
+    .term,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card h3,
+    .term h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 5px solid var(--green);
+      background: var(--soft-green);
+    }
+
+    .callout.warning {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .callout.danger {
+      border-left-color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+
+    .step {
+      min-height: 126px;
+      padding: 13px;
+      background: #fbfdfb;
+    }
+
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.96rem;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 2px 4px 2px 0;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .tag.green {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef7f1;
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    details {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .visual {
+      width: 100%;
+      min-height: 230px;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .source-slide {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    .source-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e5ebe7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .source-slide figcaption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .term {
+      padding: 14px;
+      background: #fbfdfb;
+    }
+
+    .term strong {
+      color: var(--green);
+    }
+
+    .quiz {
+      counter-reset: quiz;
+    }
+
+    .quiz details {
+      counter-increment: quiz;
+    }
+
+    .quiz summary::before {
+      content: counter(quiz) ". ";
+      color: var(--green);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .flow,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 34px 18px 26px;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      section {
+        padding: 20px 16px;
+      }
+
+      table {
+        display: block;
+        border: 0;
+        background: transparent;
+      }
+
+      table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      table thead {
+        display: none;
+      }
+
+      table tr {
+        display: block;
+        margin: 12px 0;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      table td {
+        display: grid;
+        grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        padding: 9px 0;
+        border-bottom: 1px solid #edf1ee;
+        overflow-wrap: anywhere;
+      }
+
+      table td::before {
+        content: attr(data-label);
+        color: var(--green);
+        font-weight: 750;
+      }
+
+      table tr:last-child td {
+        border-bottom: 1px solid #edf1ee;
+      }
+
+      table td:last-child,
+      table tr:last-child td:last-child {
+        border-bottom: 0;
+      }
+
+      .source-pill {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Machine Learning 2021 Spring · Lesson 08</p>
+      <h1>Batch Normalization: 把难走的 Error Surface 变平一点</h1>
+      <p>
+        这节课把前几节的 optimization 问题接起来：如果不同 feature 或 hidden activation 的 scale 差很多，
+        gradient descent 会很难走。Batch Normalization 的核心，就是在 network 里面持续做 normalization。
+      </p>
+      <div class="source-row" aria-label="local source files">
+        <a class="source-pill" href="slides/08-batch-normalization-v4.pdf">Slide PDF: 08</a>
+        <a class="source-pill" href="transcripts/08-batch-normalization.md">Transcript: Lesson 08</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="Table of contents">
+      <strong>学习路线</strong>
+      <a href="#map">1. 这节课在解决什么</a>
+      <a href="#scale">2. Scale 如何影响 Landscape</a>
+      <a href="#feature">3. Feature Normalization</a>
+      <a href="#inside">4. Network 内部也要 Normalize</a>
+      <a href="#batchnorm">5. BatchNorm 怎么算</a>
+      <a href="#gamma-beta">6. Gamma / Beta</a>
+      <a href="#inference">7. Testing / Inference</a>
+      <a href="#why">8. 为什么有效</a>
+      <a href="#practice">9. 实践判断表</a>
+      <a href="#quiz">10. 自测</a>
+      <a href="#glossary">11. 术语表</a>
+    </nav>
+
+    <main>
+      <section id="map">
+        <h2>1. 这节课在解决什么</h2>
+        <p class="lead">
+          前面几节一直在问：neural network 训练不起来时，除了调 learning rate、换 optimizer，
+          能不能直接改变 error surface？Batch Normalization 就是一个直接改变 landscape 的实用方法。
+        </p>
+
+        <div class="flow" aria-label="lesson flow">
+          <div class="step">
+            <span class="num">1</span>
+            <strong>Scale 问题</strong>
+            <span>feature 数值范围差很多，会让不同参数方向的 slope 差很多。</span>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <strong>Normalize input</strong>
+            <span>每个 dimension 减 mean、除 standard deviation。</span>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <strong>Normalize hidden</strong>
+            <span>hidden layer 的 `z` 或 `a` 也是下一层的 input。</span>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <strong>Use batch</strong>
+            <span>实际训练时只用一个 batch 估计 mean 和 standard deviation。</span>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <strong>Inference</strong>
+            <span>testing 时没有 batch，就用 training 时累积的 moving average。</span>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>一句话版本：</strong>BatchNorm 让每一层看到的输入 scale 更稳定，通常让 optimization 更容易、
+          收敛更快，并且常常允许更大的 learning rate。
+        </div>
+      </section>
+
+      <section id="scale">
+        <h2>2. Scale 如何影响 Landscape</h2>
+        <p>
+          课程用一个很简单的 linear model 解释：`y = w1*x1 + w2*x2 + b`。如果 `x1` 很小，
+          改一点 `w1` 对 `y`、error、loss 的影响也小；如果 `x2` 很大，改一点 `w2` 就会造成很大的 loss 变化。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 330" role="img" aria-label="feature scale affects loss landscape">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"></path>
+            </marker>
+          </defs>
+          <rect width="980" height="330" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Same parameter step, different input scale</text>
+          <g transform="translate(76 88)">
+            <rect width="370" height="180" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+            <text x="28" y="42" font-size="18" fill="#157347" font-weight="700">x1 is small</text>
+            <text x="28" y="82" font-size="15" fill="#17212b">x1 = 1, 2, ...</text>
+            <path d="M34 126 C108 122, 190 118, 320 116" stroke="#157347" stroke-width="7" fill="none"></path>
+            <path d="M76 134 L130 125" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+            <text x="28" y="158" font-size="15" fill="#5e6b76">change w1 -> small change in Loss</text>
+          </g>
+          <g transform="translate(536 88)">
+            <rect width="370" height="180" rx="8" fill="#fff0f0" stroke="#b91c1c"></rect>
+            <text x="28" y="42" font-size="18" fill="#b91c1c" font-weight="700">x2 is large</text>
+            <text x="28" y="82" font-size="15" fill="#17212b">x2 = 100, 200, ...</text>
+            <path d="M34 150 C106 130, 182 86, 320 42" stroke="#b91c1c" stroke-width="7" fill="none"></path>
+            <path d="M76 148 L142 112" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+            <text x="28" y="178" font-size="15" fill="#5e6b76">change w2 -> large change in Loss</text>
+          </g>
+        </svg>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-08-batch-normalization/slide-02-changing-landscape-small.png" alt="Original slide 2 showing small x1 causing small loss change." loading="lazy">
+            <figcaption>PDF slide 2: `x1` 数值小，`w1` 变化对 Loss 影响小，surface 在这个方向较 smooth。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-08-batch-normalization/slide-03-changing-landscape-large.png" alt="Original slide 3 showing large x2 causing large loss change and same range idea." loading="lazy">
+            <figcaption>PDF slide 3: `x2` 数值大，`w2` 变化对 Loss 影响大；解决方向是让不同 dimension 的 range 接近。</figcaption>
+          </figure>
+        </div>
+
+        <div class="callout warning">
+          <strong>实用理解：</strong>这不是说某个 feature “大”就一定错，而是 scale 差距会让 optimizer 在不同方向上很难用同一个 step size。
+        </div>
+      </section>
+
+      <section id="feature">
+        <h2>3. Feature Normalization</h2>
+        <p>
+          对每个 feature dimension 单独计算 training data 上的 mean 和 standard deviation，
+          然后把该 dimension 的每个值减 mean、除 standard deviation。做完后，各 dimension 的 mean 接近 0，variance 接近 1。
+        </p>
+
+        <div class="formula">
+          for each dimension i:<br>
+          x_i_tilde = (x_i - mean_i) / sigma_i
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>步骤</th>
+              <th>做什么</th>
+              <th>为什么重要</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="步骤">按 dimension 统计</td>
+              <td data-label="做什么">同一列 feature 跨所有 training examples 算 mean / standard deviation。</td>
+              <td data-label="为什么重要">每个 feature 独立校准，不把不同单位混在一起。</td>
+            </tr>
+            <tr>
+              <td data-label="步骤">标准化数值</td>
+              <td data-label="做什么">减掉 mean，再除以 standard deviation。</td>
+              <td data-label="为什么重要">让不同 dimension 的 scale 更接近。</td>
+            </tr>
+            <tr>
+              <td data-label="步骤">再训练模型</td>
+              <td data-label="做什么">把 normalized feature 丢进 network。</td>
+              <td data-label="为什么重要">通常让 gradient descent 收敛更快、更顺。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-04-feature-normalization.png" alt="Original slide 4 showing feature normalization formula and mean variance result." loading="lazy">
+          <figcaption>PDF slide 4: Feature Normalization 的基本公式；课程提醒这里讲的是 normalization 的一种做法，不是全部。</figcaption>
+        </figure>
+      </section>
+
+      <section id="inside">
+        <h2>4. Network 内部也要 Normalize</h2>
+        <p>
+          Deep learning 里，input feature 通过第一层后会变成 `z`，通过 activation function 后变成 `a`。
+          对下一层参数来说，这些 `z` 或 `a` 本质上也是 input。如果它们的 dimension scale 又变得差很多，下一层仍然难训练。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 330" role="img" aria-label="hidden activations are inputs for next layer">
+          <rect width="980" height="330" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Hidden values are also features</text>
+          <g transform="translate(76 98)">
+            <rect width="130" height="76" rx="8" fill="#edf4ff" stroke="#2563eb"></rect>
+            <text x="34" y="44" font-size="18" fill="#2563eb" font-weight="700">x_tilde</text>
+          </g>
+          <path d="M210 136 L300 136" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(318 80)">
+            <rect width="160" height="112" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+            <text x="57" y="46" font-size="18" fill="#157347" font-weight="700">W1</text>
+            <text x="40" y="76" font-size="14" fill="#5e6b76">linear layer</text>
+          </g>
+          <path d="M480 136 L570 136" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(590 72)">
+            <rect width="132" height="128" rx="8" fill="#fff4df" stroke="#b45309"></rect>
+            <text x="58" y="42" font-size="20" fill="#b45309" font-weight="700">z</text>
+            <text x="24" y="76" font-size="14" fill="#5e6b76">pre-activation</text>
+            <text x="22" y="102" font-size="14" fill="#5e6b76">normalize here?</text>
+          </g>
+          <path d="M724 136 L806 136" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(822 72)">
+            <rect width="110" height="128" rx="8" fill="#f8fafc" stroke="#61707f"></rect>
+            <text x="49" y="42" font-size="20" fill="#17212b" font-weight="700">a</text>
+            <text x="19" y="76" font-size="14" fill="#5e6b76">after activation</text>
+            <text x="20" y="102" font-size="14" fill="#5e6b76">or here?</text>
+          </g>
+          <text x="78" y="252" font-size="15" fill="#5e6b76">课程说：normalize 放在 activation 前或后，实践差异通常不大；如果用 sigmoid，放在 z 前后更常见的理由是让值靠近 0，gradient 较大。</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-05-deep-learning-internal-features.png" alt="Original slide 5 showing hidden z and a also need normalization." loading="lazy">
+          <figcaption>PDF slide 5: `z` 或 `a` 也是下一层的 feature；即使 input 已 normalize，hidden values 也可能重新产生 scale 差异。</figcaption>
+        </figure>
+      </section>
+
+      <section id="batchnorm">
+        <h2>5. BatchNorm 怎么算</h2>
+        <p>
+          训练时不可能把整个 dataset 同时塞进 network，所以实际做法是：对当前 batch 里的 hidden vectors 计算 mean 和 standard deviation，
+          再对这个 batch 内的每个 example 做 normalization。这就是 Batch Normalization。
+        </p>
+
+        <div class="formula">
+          batch mean: mu = average(z_1, z_2, ..., z_B)<br>
+          batch std: sigma = std(z_1, z_2, ..., z_B)<br>
+          z_i_tilde = (z_i - mu) / sigma
+        </div>
+
+        <div class="grid three">
+          <div class="card">
+            <h3>按 batch 统计</h3>
+            <p>`mu` 和 `sigma` 是当前 batch 算出来的向量，每个 dimension 各有一个统计值。</p>
+          </div>
+          <div class="card">
+            <h3>样本不再独立</h3>
+            <p>某个 `z_i` 改变，会影响 batch 的 `mu` / `sigma`，进而影响同 batch 其他 examples 的 normalized result。</p>
+          </div>
+          <div class="card">
+            <h3>batch 要够大</h3>
+            <p>batch size 太小，统计值不稳定；batch size = 1 时，BatchNorm 基本没有可用统计量。</p>
+          </div>
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-07-large-network-batch.png" alt="Original slide 7 showing a large network and batch normalization dependencies." loading="lazy">
+          <figcaption>PDF slide 7: 做 BatchNorm 后，一个 batch 的 examples 通过 `mu` 和 `sigma` 互相耦合；课程称它像一个处理一把 examples 的 large network。</figcaption>
+        </figure>
+
+        <div class="callout warning">
+          <strong>实践限制：</strong>BatchNorm 依赖 batch statistics。小 batch、在线单笔 inference、分布变化很大的场景，都要特别留意。
+        </div>
+      </section>
+
+      <section id="gamma-beta">
+        <h2>6. Gamma / Beta</h2>
+        <p>
+          如果只做标准化，hidden output 的 mean 会被固定到 0、variance 固定到 1，这可能限制 network 表达能力。
+          所以 BatchNorm 通常还会加上可学习的 affine transform：`gamma` 和 `beta`。
+        </p>
+
+        <div class="formula">
+          z_i_hat = gamma ⊙ z_i_tilde + beta
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>初始化</th>
+              <th>作用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="参数">`gamma`</td>
+              <td data-label="初始化">全 1 向量</td>
+              <td data-label="作用">学习每个 dimension 的缩放。</td>
+            </tr>
+            <tr>
+              <td data-label="参数">`beta`</td>
+              <td data-label="初始化">全 0 向量</td>
+              <td data-label="作用">学习每个 dimension 的平移。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-08-batchnorm-gamma-beta.png" alt="Original slide 8 showing batch normalization with gamma and beta." loading="lazy">
+          <figcaption>PDF slide 8: normalize 之后再乘 `gamma`、加 `beta`；它们是 network 里会被 learned 的参数。</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>为什么不矛盾：</strong>一开始 `gamma=1`、`beta=0`，所以 training 初期仍有 normalization 的好处；
+          后面 network 如果需要别的分布，可以自己学出来。
+        </div>
+      </section>
+
+      <section id="inference">
+        <h2>7. Testing / Inference</h2>
+        <p>
+          训练时可以用一个 batch 算 `mu` 和 `sigma`。但真实线上系统常常是一笔 data 进来就要预测，不能等凑满一个 batch。
+          所以 testing / inference 时，BatchNorm 使用 training 过程中累积的 moving average。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 330" role="img" aria-label="batch normalization train and inference">
+          <rect width="980" height="330" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Training stores statistics, inference reuses them</text>
+          <g transform="translate(72 88)">
+            <rect width="370" height="180" rx="8" fill="#edf4ff" stroke="#2563eb"></rect>
+            <text x="28" y="42" font-size="18" fill="#2563eb" font-weight="700">Training mode</text>
+            <text x="28" y="82" font-size="15" fill="#17212b">each batch computes mu_t, sigma_t</text>
+            <text x="28" y="116" font-size="15" fill="#5e6b76">update moving average</text>
+            <text x="28" y="150" font-size="15" fill="#5e6b76">also learn gamma and beta</text>
+          </g>
+          <path d="M455 178 L530 178" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <g transform="translate(548 88)">
+            <rect width="360" height="180" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+            <text x="28" y="42" font-size="18" fill="#157347" font-weight="700">Inference mode</text>
+            <text x="28" y="82" font-size="15" fill="#17212b">use mu_bar, sigma_bar</text>
+            <text x="28" y="116" font-size="15" fill="#5e6b76">no need to wait for a batch</text>
+            <text x="28" y="150" font-size="15" fill="#5e6b76">framework handles this after eval mode</text>
+          </g>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-09-testing-moving-average.png" alt="Original slide 9 showing batch normalization testing with moving average." loading="lazy">
+          <figcaption>PDF slide 9: testing 时用 training 过程中每个 batch 的 `mu` / `sigma` moving average。</figcaption>
+        </figure>
+
+        <div class="callout danger">
+          <strong>PyTorch 注意：</strong>课程说 PyTorch 会帮你处理，但前提是你正确切换 `model.train()` 和 `model.eval()`。
+          训练和推理模式混用，是 BatchNorm 常见坑。
+        </div>
+      </section>
+
+      <section id="why">
+        <h2>8. 为什么有效</h2>
+        <p>
+          原始 BatchNorm paper 给了实验结果：有 BatchNorm 的模型训练更快，甚至在 sigmoid 这种较难训练的 activation 下也能训起来；
+          做了 BatchNorm 后，也常常能承受更大的 learning rate。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-10-original-paper-result.png" alt="Original slide 10 showing original paper experiment result for batch normalization." loading="lazy">
+          <figcaption>PDF slide 10: 原始 paper 的实验图；BatchNorm 通常更快达到同样 validation accuracy。</figcaption>
+        </figure>
+
+        <h3>Internal Covariate Shift 的解释有争议</h3>
+        <p>
+          原始解释之一叫 `internal covariate shift`：前一层参数更新后，后一层看到的 activation 分布变了，
+          所以前一轮算出的 gradient 可能不再合适。BatchNorm 似乎能让前后分布更接近。
+        </p>
+        <p>
+          但课程引用的 `How Does Batch Normalization Help Optimization?` 指出，实验不支持把 internal covariate shift 当作主要原因。
+          更有支持的解释是：BatchNorm 改变了 error surface，让 landscape 比较不崎岖、更好优化。
+        </p>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-08-batch-normalization/slide-11-internal-covariate-shift.png" alt="Original slide 11 explaining internal covariate shift and later criticism." loading="lazy">
+            <figcaption>PDF slide 11: internal covariate shift 的直觉解释，以及后续实验不支持这个观点。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-08-batch-normalization/slide-12-landscape-explanation.png" alt="Original slide 12 saying batch normalization changes error surface landscape and serendipitous." loading="lazy">
+            <figcaption>PDF slide 12: 更可靠的理解是 BatchNorm 改变 error surface；课程提到它的成功有 serendipitous 的味道。</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="practice">
+        <h2>9. 实践判断表</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>情况</th>
+              <th>建议</th>
+              <th>原因</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="情况">输入 feature scale 差很多</td>
+              <td data-label="建议">先做 Feature Normalization</td>
+              <td data-label="原因">这是最便宜、最常见的训练稳定性处理。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">deep network hidden layer 难训练</td>
+              <td data-label="建议">考虑 BatchNorm</td>
+              <td data-label="原因">hidden activations 也是下一层的 input，scale 也会影响 optimization。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">batch size 很小</td>
+              <td data-label="建议">谨慎使用 BatchNorm，考虑其他 normalization</td>
+              <td data-label="原因">BatchNorm 依赖 batch statistics，小 batch 统计不稳。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">线上单笔 inference</td>
+              <td data-label="建议">确保 eval mode 使用 moving averages</td>
+              <td data-label="原因">testing 时不能依赖临时 batch。</td>
+            </tr>
+            <tr>
+              <td data-label="情况">加 BatchNorm 后想调 learning rate</td>
+              <td data-label="建议">可以尝试更大 learning rate，但仍要验证</td>
+              <td data-label="原因">课程实验显示可用更大 LR，但 deep learning 结果不保证单调变好。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-08-batch-normalization/slide-13-normalization-family.png" alt="Original slide 13 listing batch renormalization, layer normalization, instance normalization, group normalization, weight normalization, and spectrum normalization." loading="lazy">
+          <figcaption>PDF slide 13: BatchNorm 不是唯一 normalization；还有 Batch Renormalization、LayerNorm、InstanceNorm、GroupNorm、WeightNorm、SpectrumNorm 等。</figcaption>
+        </figure>
+      </section>
+
+      <section id="quiz" class="quiz">
+        <h2>10. 自测</h2>
+        <details>
+          <summary>为什么 feature scale 差很多会让训练变难？</summary>
+          <p>因为不同参数方向的 slope 会差很多，同一个 learning rate 在某些方向太小、在某些方向太大，gradient descent 更难稳定前进。</p>
+        </details>
+        <details>
+          <summary>Feature Normalization 的基本公式是什么？</summary>
+          <p>对每个 dimension：减掉该 dimension 的 mean，再除以该 dimension 的 standard deviation。</p>
+        </details>
+        <details>
+          <summary>为什么 deep learning 里 hidden layer 也需要 normalization？</summary>
+          <p>因为 `z` 或 `a` 是下一层参数看到的 input；即使原始输入已经 normalize，经过前一层后 scale 仍可能变得不一致。</p>
+        </details>
+        <details>
+          <summary>BatchNorm 为什么叫 batch normalization？</summary>
+          <p>因为训练时只用当前 batch 里的 examples 估计 mean 和 standard deviation，而不是用整个 dataset。</p>
+        </details>
+        <details>
+          <summary>`gamma` 和 `beta` 解决什么问题？</summary>
+          <p>它们让 network 在 normalization 后仍然可以学习需要的缩放和平移，避免 hidden output 永远被固定成 mean 0、variance 1。</p>
+        </details>
+        <details>
+          <summary>Testing / inference 时 BatchNorm 怎么处理没有 batch 的问题？</summary>
+          <p>使用 training 阶段累积的 moving average mean 和 standard deviation，而不是现场用单笔输入重新估计。</p>
+        </details>
+      </section>
+
+      <section id="glossary">
+        <h2>11. 术语表</h2>
+        <div class="grid two">
+          <div class="term"><strong>Batch Normalization</strong>：用 batch statistics normalize hidden values 的技术。</div>
+          <div class="term"><strong>Feature Normalization</strong>：把 feature scale 调整到相近范围，常见做法是 mean 0、variance 1。</div>
+          <div class="term"><strong>Mean</strong>：平均值；BatchNorm 中按 dimension 对 batch 计算。</div>
+          <div class="term"><strong>Standard Deviation</strong>：标准差；用来衡量该 dimension 的数值分散程度。</div>
+          <div class="term"><strong>Gamma / Beta</strong>：BatchNorm 后的 learnable scale 和 shift。</div>
+          <div class="term"><strong>Training Mode</strong>：训练模式；BatchNorm 用当前 batch statistics 并更新 moving averages。</div>
+          <div class="term"><strong>Inference / Testing</strong>：推理/测试模式；BatchNorm 使用 training 中保存的 moving averages。</div>
+          <div class="term"><strong>Internal Covariate Shift</strong>：原始 paper 的一种解释，但课程指出后续研究不支持它是主要原因。</div>
+          <div class="term"><strong>Error Surface / Landscape</strong>：loss 随参数变化形成的地形；BatchNorm 更可靠的理解是让它更好优化。</div>
+          <div class="term"><strong>Serendipitous</strong>：意外发现有用东西；课程用它形容 BatchNorm 成功的某种偶然性。</div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <p class="footer-note">
+          本页基于本地材料整理：`slides/08-batch-normalization-v4.pdf` 与
+          `transcripts/08-batch-normalization.md`。PDF slide screenshots are local teaching assets under
+          `teaching-assets/lesson-08-batch-normalization/`.
+        </p>
+        <p class="footer-note">
+          Slide 中引用的论文链接包括：
+          <a href="https://arxiv.org/abs/1502.03167">Batch Normalization original paper</a>、
+          <a href="https://arxiv.org/abs/1805.11604">How Does Batch Normalization Help Optimization?</a>。
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

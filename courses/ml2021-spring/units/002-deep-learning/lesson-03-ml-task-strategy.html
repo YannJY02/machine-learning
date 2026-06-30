@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML2021 Lesson 03: ML Task Strategy</title>
+  <style>
+    :root {
+      --bg: #f7f8f4;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #61707f;
+      --line: #dfe6de;
+      --green: #157347;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --soft-green: #e9f7ef;
+      --soft-blue: #edf4ff;
+      --soft-amber: #fff4df;
+      --soft-red: #fff0f0;
+      --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      padding: 0.08rem 0.28rem;
+      border-radius: 5px;
+      background: #eef2f7;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.92em;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #173527 0%, #244f6d 58%, #6d4116 100%);
+      color: #fff;
+      padding: 44px 24px 32px;
+    }
+
+    .hero-inner,
+    .shell {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #d7f7e8;
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 1040px;
+      margin: 0;
+      font-size: clamp(2.05rem, 5vw, 3.85rem);
+    }
+
+    .hero p {
+      max-width: 920px;
+      margin: 16px 0 0;
+      color: #edf8f3;
+      font-size: 1.05rem;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 0.88rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 56px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.96rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid #edf1ee;
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.65rem;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid > *,
+    .card,
+    .step,
+    .term,
+    .callout {
+      min-width: 0;
+    }
+
+    .card,
+    .callout,
+    .term,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card h3,
+    .term h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 5px solid var(--green);
+      background: var(--soft-green);
+    }
+
+    .callout.warning {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .callout.danger {
+      border-left-color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+
+    .step {
+      min-height: 126px;
+      padding: 13px;
+      background: #fbfdfb;
+    }
+
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.96rem;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 2px 4px 2px 0;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .tag.green {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .tag.red {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef7f1;
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    details {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .visual {
+      width: 100%;
+      min-height: 230px;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .source-slide {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    .source-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e5ebe7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .source-slide figcaption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .term {
+      padding: 14px;
+      background: #fbfdfb;
+    }
+
+    .term strong {
+      color: var(--green);
+    }
+
+    .quiz {
+      counter-reset: quiz;
+    }
+
+    .quiz details {
+      counter-increment: quiz;
+    }
+
+    .quiz summary::before {
+      content: counter(quiz) ". ";
+      color: var(--green);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .flow,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 34px 18px 26px;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      section {
+        padding: 20px 16px;
+      }
+
+      table {
+        display: block;
+        border: 0;
+        background: transparent;
+      }
+
+      table tbody {
+        display: block;
+        width: 100%;
+      }
+
+      table thead {
+        display: none;
+      }
+
+      table tr {
+        display: block;
+        margin: 12px 0;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      table td {
+        display: grid;
+        grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        padding: 9px 0;
+        border-bottom: 1px solid #edf1ee;
+        overflow-wrap: anywhere;
+      }
+
+      table td::before {
+        content: attr(data-label);
+        color: var(--green);
+        font-weight: 750;
+      }
+
+      table tr:last-child td {
+        border-bottom: 1px solid #edf1ee;
+      }
+
+      table td:last-child,
+      table tr:last-child td:last-child {
+        border-bottom: 0;
+      }
+
+      .source-pill {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Machine Learning 2021 Spring · Lesson 03</p>
+      <h1>ML 任务攻略：先看 Training Loss，再判断 Bias / Optimization / Overfitting</h1>
+      <p>
+        这节课是前期作业的诊断手册。你不满意 Kaggle 或测试结果时，不要直接猜原因；
+        先看 training data，再按流程判断是 model bias、optimization issue、overfitting，还是 mismatch。
+      </p>
+      <div class="source-row" aria-label="local source files">
+        <a class="source-pill" href="slides/03-ml-task-strategy-overfit-v6.pdf">Slide PDF: 03</a>
+        <a class="source-pill" href="transcripts/03-ml-task-strategy.md">Transcript: Lesson 03</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="Table of contents">
+      <strong>学习路线</strong>
+      <a href="#map">1. 这节课在解决什么</a>
+      <a href="#framework">2. ML 作业共同框架</a>
+      <a href="#guide">3. 总诊断流程</a>
+      <a href="#bias">4. Model Bias</a>
+      <a href="#optimization">5. Optimization Issue</a>
+      <a href="#overfitting">6. Overfitting</a>
+      <a href="#fix-overfitting">7. 处理 Overfitting</a>
+      <a href="#selection">8. Model Selection</a>
+      <a href="#mismatch">9. Mismatch</a>
+      <a href="#playbook">10. 实战 Checklist</a>
+      <a href="#quiz">11. 自测</a>
+      <a href="#glossary">12. 术语表</a>
+    </nav>
+
+    <main>
+      <section id="map">
+        <h2>1. 这节课在解决什么</h2>
+        <p class="lead">
+          这节不是教一个新 layer，而是教你遇到“模型表现不好”时怎么定位问题。课程反复强调：
+          结果不好不等于 overfitting。第一步永远是记录并检查 training loss。
+        </p>
+
+        <div class="flow" aria-label="lesson flow">
+          <div class="step">
+            <span class="num">1</span>
+            <strong>先看 Training Loss</strong>
+            <span>训练集上都学不好，就先别急着看 Kaggle 分数。</span>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <strong>大 Training Loss</strong>
+            <span>可能是 model bias，也可能是 optimization issue。</span>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <strong>小 Training Loss</strong>
+            <span>再看 testing / validation loss 是否也小。</span>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <strong>Testing Loss 大</strong>
+            <span>可能是 overfitting，也可能是 train/test mismatch。</span>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <strong>用 Validation 选模型</strong>
+            <span>不要靠 public leaderboard 反复调模型。</span>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <strong>本课最实用的一句话：</strong>每次实验至少记录 training loss、validation loss、public score。
+          没有 training loss，就很难判断该加大模型、换 optimizer，还是处理 overfitting。
+        </div>
+      </section>
+
+      <section id="framework">
+        <h2>2. ML 作业共同框架</h2>
+        <p>
+          课程说后续很多作业格式都类似：training data 有 <code>x</code> 和 label <code>ŷ</code>，
+          testing data 只有 <code>x</code>。任务不同，只是 <code>x</code> 和 <code>ŷ</code> 的含义不同。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>作业/任务</th>
+              <th>Input x</th>
+              <th>Label ŷ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="作业/任务">Speech Recognition</td>
+              <td data-label="Input x">一小段声音讯号</td>
+              <td data-label="Label ŷ">对应的 phoneme，课程说可以先想成 KK 音标</td>
+            </tr>
+            <tr>
+              <td data-label="作业/任务">Image Recognition</td>
+              <td data-label="Input x">一张图片</td>
+              <td data-label="Label ŷ">图片里是什么东西</td>
+            </tr>
+            <tr>
+              <td data-label="作业/任务">Speaker Recognition</td>
+              <td data-label="Input x">一段声音讯号</td>
+              <td data-label="Label ŷ">是哪一个人在说话</td>
+            </tr>
+            <tr>
+              <td data-label="作业/任务">Machine Translation</td>
+              <td data-label="Input x">某个语言的一句话</td>
+              <td data-label="Label ŷ">另一个语言的对应句子</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-02-framework-tasks.png" alt="Original slide 2 showing training data, testing data, and ML task examples." loading="lazy">
+          <figcaption>PDF slide 2: 不同作业共享同一个 supervised learning 框架，只是输入和标签类型不同。</figcaption>
+        </figure>
+
+        <h3>训练三步骤</h3>
+        <div class="formula">
+          Step 1: choose function with unknown parameters: y = f_theta(x)<br>
+          Step 2: define loss from training data: L(theta)<br>
+          Step 3: solve optimization: theta* = argmin_theta L(theta)
+        </div>
+        <p>
+          找到 <code>theta*</code> 后，就用 <code>f_theta*(x)</code> 给 testing data 产生预测，再上传 Kaggle。
+          如果只跑 sample code，通常只能得到 simple baseline；要进步，就要按下面的诊断流程走。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-03-training-pipeline.png" alt="Original slide 3 showing function, loss, optimization, and Kaggle upload." loading="lazy">
+          <figcaption>PDF slide 3: ML 训练 pipeline：model、loss、optimization、testing prediction、Kaggle upload。</figcaption>
+        </figure>
+      </section>
+
+      <section id="guide">
+        <h2>3. 总诊断流程</h2>
+        <p>
+          课程的 General Guide 是一个决策树。你对结果不满意时，不要先问“怎么调参”，先把问题归类。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 520" role="img" aria-label="ML task diagnostic decision tree">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"></path>
+            </marker>
+          </defs>
+          <rect width="980" height="520" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="21" fill="#17212b" font-weight="700">If result is bad, classify the failure first</text>
+          <rect x="350" y="72" width="280" height="66" rx="8" fill="#edf4ff" stroke="#2563eb"></rect>
+          <text x="400" y="111" font-size="17" fill="#2563eb" font-weight="700">Check training loss</text>
+          <path d="M430 138 L270 204" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <path d="M550 138 L708 204" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <rect x="90" y="210" width="300" height="82" rx="8" fill="#fff4df" stroke="#b45309"></rect>
+          <text x="145" y="242" font-size="17" fill="#b45309" font-weight="700">Training loss large</text>
+          <text x="124" y="270" font-size="14" fill="#5e6b76">model did not fit training data</text>
+          <rect x="590" y="210" width="300" height="82" rx="8" fill="#e9f7ef" stroke="#157347"></rect>
+          <text x="650" y="242" font-size="17" fill="#157347" font-weight="700">Training loss small</text>
+          <text x="618" y="270" font-size="14" fill="#5e6b76">now inspect testing / validation loss</text>
+          <path d="M190 292 L164 360" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <path d="M295 292 L340 360" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <rect x="44" y="368" width="230" height="92" rx="8" fill="#fff" stroke="#dfe6de"></rect>
+          <text x="92" y="398" font-size="17" fill="#17212b" font-weight="700">Model bias</text>
+          <text x="66" y="426" font-size="14" fill="#5e6b76">model set has no good function</text>
+          <text x="64" y="448" font-size="14" fill="#157347">make model more flexible</text>
+          <rect x="306" y="368" width="230" height="92" rx="8" fill="#fff" stroke="#dfe6de"></rect>
+          <text x="355" y="398" font-size="17" fill="#17212b" font-weight="700">Optimization</text>
+          <text x="325" y="426" font-size="14" fill="#5e6b76">good function exists</text>
+          <text x="328" y="448" font-size="14" fill="#157347">but gradient descent missed it</text>
+          <path d="M702 292 L670 360" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <path d="M790 292 L828 360" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <rect x="574" y="368" width="190" height="92" rx="8" fill="#fff" stroke="#dfe6de"></rect>
+          <text x="616" y="398" font-size="17" fill="#17212b" font-weight="700">Testing small</text>
+          <text x="626" y="430" font-size="14" fill="#157347">done</text>
+          <rect x="790" y="368" width="150" height="92" rx="8" fill="#fff0f0" stroke="#b91c1c"></rect>
+          <text x="818" y="398" font-size="17" fill="#b91c1c" font-weight="700">Testing large</text>
+          <text x="810" y="430" font-size="14" fill="#5e6b76">overfitting or mismatch</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-04-general-guide.png" alt="Original slide 4 showing the general guide decision tree." loading="lazy">
+          <figcaption>PDF slide 4: 这节课的总路线图。先检查 training loss，再检查 testing loss。</figcaption>
+        </figure>
+
+        <div class="callout danger">
+          <strong>不要乱贴标签：</strong>Testing result 不好不一定是 overfitting。只有 training loss 小、testing loss 大，
+          才是典型 overfitting 诊断。
+        </div>
+      </section>
+
+      <section id="bias">
+        <h2>4. Model Bias</h2>
+        <p>
+          Model bias 是模型太简单：你定义的 function set 太小，里面根本没有任何一个 function 能把 training loss 降低。
+          课程用“海里没有针”的比喻：你再怎么找，也找不到低 loss 的 function。
+        </p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>症状</h3>
+            <p>Training loss 很大，而且比较更灵活的模型后，发现模型容量确实可能不够。</p>
+          </div>
+          <div class="card">
+            <h3>处理</h3>
+            <p>让 model 更 complex：加 features、加 neurons、加 layers、换更有弹性的 model。</p>
+          </div>
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-05-model-bias.png" alt="Original slide 5 explaining model bias and making the model more flexible." loading="lazy">
+          <figcaption>PDF slide 5: Model bias = model set 太小；解法是 redesign model，让它更 flexible。</figcaption>
+        </figure>
+      </section>
+
+      <section id="optimization">
+        <h2>5. Optimization Issue</h2>
+        <p>
+          Training loss 大不一定是 model bias。另一种可能是：低 loss 的 function 明明在 model set 里，
+          但 gradient descent 没找到。课程把它比喻成“针在海里，但你没捞出来”。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-07-optimization-issue.png" alt="Original slide 7 explaining optimization issue." loading="lazy">
+          <figcaption>PDF slide 7: Optimization issue = good function exists, but optimizer cannot find it.</figcaption>
+        </figure>
+
+        <h3>怎么区分 Bias 和 Optimization？</h3>
+        <p>
+          课程建议：比较不同模型，尤其从 shallow network 或 simpler model 开始。简单模型通常较容易 optimize。
+          如果 deeper model 明明更 flexible，却无法在 training data 上取得比 shallow model 更低的 loss，
+          这通常是 optimization issue。
+        </p>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-08-bias-vs-optimization.png" alt="Original slide 8 comparing model bias and optimization issue." loading="lazy">
+            <figcaption>PDF slide 8: Model bias 和 optimization issue 的核心差别：海里有没有针，以及有没有找到。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-09-resnet-comparison.png" alt="Original slide 9 showing ResNet comparison between 20-layer and 56-layer networks." loading="lazy">
+            <figcaption>PDF slide 9: ResNet paper 例子：56-layer network 训练 loss 比 20-layer 高，这不是 overfitting，而是 optimization 没做好。</figcaption>
+          </figure>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>观察</th>
+              <th>更可能是什么</th>
+              <th>下一步</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="观察">大模型 training loss 仍高，小模型也高</td>
+              <td data-label="更可能是什么">可能是 model bias 或 feature 不够</td>
+              <td data-label="下一步">增加 features、model capacity，或检查 label/data 是否合理。</td>
+            </tr>
+            <tr>
+              <td data-label="观察">浅模型 training loss 低，深模型反而高</td>
+              <td data-label="更可能是什么">optimization issue</td>
+              <td data-label="下一步">换 optimizer、调 learning rate、normalization、初始化等。</td>
+            </tr>
+            <tr>
+              <td data-label="观察">层数增加时 loss 从 0.28k 降到 0.10k，再突然到 0.34k</td>
+              <td data-label="更可能是什么">optimization issue</td>
+              <td data-label="下一步">不要说成 overfitting；先处理训练优化。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-10-optimization-diagnosis.png" alt="Original slide 10 explaining shallow model comparison and optimization diagnosis." loading="lazy">
+          <figcaption>PDF slide 10: 用 shallow / simple model 建立 baseline，判断 deep model 是否 optimize 失败。</figcaption>
+        </figure>
+      </section>
+
+      <section id="overfitting">
+        <h2>6. Overfitting</h2>
+        <p>
+          Overfitting 的定义很具体：training loss 小，但是 testing loss 大。模型在训练数据上记得很好，
+          但没有学到能泛化到新数据的规律。
+        </p>
+
+        <div class="callout">
+          <strong>极端例子：</strong>一个 function 如果看到训练集里出现过的 <code>x</code> 就输出对应 label，
+          没见过就 random，它的 training loss 可以是 0，但 testing loss 会很大。
+        </div>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-13-overfitting-extreme.png" alt="Original slide 13 showing an extreme overfitting example." loading="lazy">
+            <figcaption>PDF slide 13: 极端 overfitting function：记住训练资料，没见过就随机。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-14-overfitting-flexible.png" alt="Original slide 14 showing flexible model freestyle between training points." loading="lazy">
+            <figcaption>PDF slide 14: Flexible model 只被少量 training points 约束，其他地方会 freestyle，导致 testing loss 大。</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="fix-overfitting">
+        <h2>7. 处理 Overfitting</h2>
+        <p>
+          课程给两类方向：增加资料，或者限制模型。实际作业里通常不能自己搜集额外资料，所以更常用 data augmentation、
+          regularization、dropout、early stopping、减少参数或 features 等方法。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>方法</th>
+              <th>课程里的意思</th>
+              <th>注意事项</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="方法">More training data</td>
+              <td data-label="课程里的意思">最直接、常常有效，让 flexible model 被更多点约束。</td>
+              <td data-label="注意事项">作业里通常不允许自己额外搜集资料。</td>
+            </tr>
+            <tr>
+              <td data-label="方法">Data augmentation</td>
+              <td data-label="课程里的意思">基于任务知识创造合理变形，例如图片左右翻转、裁切放大。</td>
+              <td data-label="注意事项">不能乱 augment；上下颠倒图片可能让模型学到奇怪东西。</td>
+            </tr>
+            <tr>
+              <td data-label="方法">Make model simpler</td>
+              <td data-label="课程里的意思">减少参数、减少 neurons、减少 features、共享参数。</td>
+              <td data-label="注意事项">限制要符合资料特性；太限制会回到 model bias。</td>
+            </tr>
+            <tr>
+              <td data-label="方法">Early stopping / Regularization / Dropout</td>
+              <td data-label="课程里的意思">Deep learning 常用的限制模型或训练过程方法。</td>
+              <td data-label="注意事项">课程后面会细讲；作业 sample code 已含部分设置或留空让你填。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-15-data-augmentation.png" alt="Original slide 15 showing more training data and data augmentation." loading="lazy">
+            <figcaption>PDF slide 15: 增加 training data 或 data augmentation，可以减少 flexible model 在空白区域乱摆。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-17-constrain-model.png" alt="Original slide 17 listing constrained model methods." loading="lazy">
+            <figcaption>PDF slide 17: 通过 fewer parameters、sharing parameters、less features、early stopping、regularization、dropout 等限制模型。</figcaption>
+          </figure>
+        </div>
+
+        <div class="callout warning">
+          <strong>CNN 的实用直觉：</strong>课程强调 CNN 不是因为“更自由”才适合图片，恰好相反：
+          CNN 相比 fully-connected network 更受限制，但这些限制符合 image 的特性，所以效果更好。
+        </div>
+
+        <h3>Bias-Complexity Trade-off</h3>
+        <p>
+          Model complexity 增加时，training loss 通常会下降；但 testing loss 先下降，过了某个点又上升。
+          太简单是 model bias，太复杂容易 overfitting，中间才是你想选的模型。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-18-bias-complexity-tradeoff.png" alt="Original slide 18 showing bias-complexity trade-off." loading="lazy">
+          <figcaption>PDF slide 18: Training loss 随复杂度下降；testing loss 有最佳复杂度点。</figcaption>
+        </figure>
+      </section>
+
+      <section id="selection">
+        <h2>8. Model Selection：不要用 Public Leaderboard 调到底</h2>
+        <p>
+          很多人会把多个模型都上传 Kaggle，看 public score 哪个好就选哪个。课程不建议这样做：
+          如果你反复用 public testing set 选模型，你其实是在 fit public set，private set 可能会掉很多。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-19-public-private-overfit.png" alt="Original slide 19 showing public private testing set and random model selection risk." loading="lazy">
+          <figcaption>PDF slide 19: 即使模型本身随机，尝试足够多次也可能碰巧在 public set 上好；这不代表 private set 会好。</figcaption>
+        </figure>
+
+        <div class="callout danger">
+          <strong>Kaggle 实战警告：</strong>Public leaderboard 高不代表模型真的泛化好。课程建议越少看 public testing set 结果越好；
+          通过 strong baseline 后，不要因为 public score 反复调到过拟合。
+        </div>
+
+        <h3>正确做法：Validation Set</h3>
+        <p>
+          把 training data 再切成 training set 和 validation set。模型在 training set 上训练，
+          用 validation set 选模型。这样 public testing set 更像一个独立检查，而不是你的调参目标。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-21-cross-validation.png" alt="Original slide 21 showing validation set and warning against selecting by public testing data." loading="lazy">
+          <figcaption>PDF slide 21: 用 validation set 选模型；用 public testing set 选模型会让 public 比 private 更好。</figcaption>
+        </figure>
+
+        <h3>N-fold Cross Validation</h3>
+        <p>
+          如果担心一次 random split 刚好切得不好，可以用 N-fold Cross Validation：把训练资料切成 N 份，
+          每次用其中一份当 validation，其余当 training，重复 N 次，把每个模型的 validation 结果平均后再选模型。
+          选好模型类型后，再用全部 training data 训练最终模型。
+        </p>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-03-ml-task-strategy/slide-22-n-fold-cross-validation.png" alt="Original slide 22 showing N-fold cross validation." loading="lazy">
+          <figcaption>PDF slide 22: N-fold Cross Validation 用多个 split 平均评估，降低单次切分偶然性。</figcaption>
+        </figure>
+      </section>
+
+      <section id="mismatch">
+        <h2>9. Mismatch</h2>
+        <p>
+          如果 training loss 小，但 testing loss 大，除了 overfitting，还有一种可能是 mismatch：
+          training data 和 testing data 来自不同 distributions。课程用 2/26 观看人数预测做例子：
+          历史上周五观看少，但 2021-02-26 反常变成高峰，模型当然预测不准。
+        </p>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-24-views-prediction.png" alt="Original slide 24 showing prediction of views on 2/26 and large error." loading="lazy">
+            <figcaption>PDF slide 24: 观看人数预测例子里，所有模型都把 2/26 预测成低点，但真实值是高峰。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-03-ml-task-strategy/slide-26-mismatch.png" alt="Original slide 26 explaining mismatch between training and testing distributions." loading="lazy">
+            <figcaption>PDF slide 26: Mismatch = training/testing distributions 不同；简单增加 training data 不一定有用。</figcaption>
+          </figure>
+        </div>
+
+        <p>
+          课程说多数作业不会设计成严重 mismatch，除了 HW11。判断 mismatch 需要理解资料怎么产生：
+          例如如果用 2020 年 COVID 数据训练、2021 年数据测试，distribution 变化很大，就可能怎么训都差。
+        </p>
+      </section>
+
+      <section id="playbook">
+        <h2>10. 实战 Checklist</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>你看到的现象</th>
+              <th>优先判断</th>
+              <th>实际操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="你看到的现象">Public score 不好，但没记录 training loss</td>
+              <td data-label="优先判断">信息不足</td>
+              <td data-label="实际操作">先回去记录 training loss / validation loss，不要直接猜 overfitting。</td>
+            </tr>
+            <tr>
+              <td data-label="你看到的现象">Training loss 大</td>
+              <td data-label="优先判断">Model bias 或 optimization issue</td>
+              <td data-label="实际操作">比较 shallow/simple model 与 deep model；看更大模型是否真的降低 training loss。</td>
+            </tr>
+            <tr>
+              <td data-label="你看到的现象">Deep model training loss 比 shallow model 更高</td>
+              <td data-label="优先判断">Optimization issue</td>
+              <td data-label="实际操作">先处理 optimizer、learning rate、normalization、initialization，而不是叫 overfitting。</td>
+            </tr>
+            <tr>
+              <td data-label="你看到的现象">Training loss 小，validation/testing loss 大</td>
+              <td data-label="优先判断">Overfitting</td>
+              <td data-label="实际操作">Data augmentation、regularization、dropout、early stopping、减少模型弹性。</td>
+            </tr>
+            <tr>
+              <td data-label="你看到的现象">Validation 好，public/private 或实际数据突然差</td>
+              <td data-label="优先判断">可能 mismatch 或 public set overfitting</td>
+              <td data-label="实际操作">检查 train/test 生成方式；减少用 public score 反复调模型。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="quiz" class="quiz">
+        <h2>11. 自测</h2>
+        <details>
+          <summary>为什么结果不好时第一步要看 training loss？</summary>
+          <p>因为如果 training loss 都大，模型还没有学好训练资料，问题在 model bias 或 optimization；这时直接看 testing loss 或 Kaggle score 会误判。</p>
+        </details>
+        <details>
+          <summary>Model bias 和 optimization issue 的差别是什么？</summary>
+          <p>Model bias 是 model set 里没有低 loss function；optimization issue 是低 loss function 存在，但 optimizer 没找到。</p>
+        </details>
+        <details>
+          <summary>为什么 56-layer network training loss 比 20-layer 高不是 overfitting？</summary>
+          <p>因为 overfitting 要 training loss 小、testing loss 大。这里 56-layer 在 training data 上就比 20-layer 差，更像 optimization 没做好。</p>
+        </details>
+        <details>
+          <summary>Overfitting 的准确症状是什么？</summary>
+          <p>Training loss 小，但 validation/testing loss 大。不能把所有 testing result 不好都叫 overfitting。</p>
+        </details>
+        <details>
+          <summary>Data augmentation 为什么不能乱做？</summary>
+          <p>Augmentation 要符合资料和任务特性。图片左右翻转可能合理，上下颠倒可能不符合真实世界，会让模型学到错误模式。</p>
+        </details>
+        <details>
+          <summary>为什么不建议靠 public leaderboard 选模型？</summary>
+          <p>反复用 public score 调模型，会让模型或选择过程 fit public set，private set 可能表现很差。</p>
+        </details>
+        <details>
+          <summary>Mismatch 和 overfitting 有什么不同？</summary>
+          <p>Overfitting 通常可以通过更多同分布资料缓解；mismatch 是 training/testing distributions 不同，简单增加同一训练分布的数据不一定有用。</p>
+        </details>
+      </section>
+
+      <section id="glossary">
+        <h2>12. 术语表</h2>
+        <div class="grid two">
+          <div class="term"><strong>Training Loss</strong>：模型在训练资料上的 loss，是诊断第一步。</div>
+          <div class="term"><strong>Testing Loss</strong>：模型在测试资料上的 loss；Kaggle public/private score 是常见近似观察。</div>
+          <div class="term"><strong>Validation Set</strong>：从 training data 切出来用于选模型的数据。</div>
+          <div class="term"><strong>Model Bias</strong>：模型太简单，function set 里没有好 function。</div>
+          <div class="term"><strong>Optimization Issue</strong>：模型有能力，但 optimizer 找不到好参数。</div>
+          <div class="term"><strong>Overfitting</strong>：training loss 小、testing loss 大，泛化失败。</div>
+          <div class="term"><strong>Data Augmentation</strong>：基于任务知识创造合理的新训练样本。</div>
+          <div class="term"><strong>Regularization</strong>：限制模型或参数，降低过拟合风险的方法集合。</div>
+          <div class="term"><strong>Dropout</strong>：deep learning 中常见 regularization 方法，后续课程会讲。</div>
+          <div class="term"><strong>Early Stopping</strong>：训练到 validation 不再改善时停止，避免继续 fit training set。</div>
+          <div class="term"><strong>N-fold Cross Validation</strong>：多次切分 validation set，平均结果后选模型。</div>
+          <div class="term"><strong>Mismatch</strong>：training/testing data distributions 不同，常规 overfitting 解法不一定有效。</div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <p class="footer-note">
+          本页基于本地材料整理：<code>slides/03-ml-task-strategy-overfit-v6.pdf</code> 与
+          <code>transcripts/03-ml-task-strategy.md</code>。PDF slide screenshots are local teaching assets under
+          <code>teaching-assets/lesson-03-ml-task-strategy/</code>.
+        </p>
+        <p class="footer-note">
+          Slide 中引用了 ResNet paper：<a href="http://arxiv.org/abs/1512.03385">Deep Residual Learning for Image Recognition</a>，
+          以及 Kaggle model selection discussion：<a href="http://www.chioka.in/how-to-select-your-final-models-in-a-kaggle-competitio/">How to select your final models in a Kaggle competition</a>。
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML2021 Lesson 06: Adaptive Learning Rate</title>
+  <style>
+    :root {
+      --bg: #f7f8f4;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #61707f;
+      --line: #dfe6de;
+      --green: #157347;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --violet: #6d28d9;
+      --soft-green: #e9f7ef;
+      --soft-blue: #edf4ff;
+      --soft-amber: #fff4df;
+      --soft-red: #fff0f0;
+      --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #153527 0%, #284a6c 58%, #6b3f13 100%);
+      color: #fff;
+      padding: 44px 24px 32px;
+    }
+
+    .hero-inner,
+    .shell {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #d7f7e8;
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4rem);
+    }
+
+    .hero p {
+      max-width: 900px;
+      margin: 16px 0 0;
+      color: #edf8f3;
+      font-size: 1.05rem;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 0.88rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 56px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.96rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid #edf1ee;
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.65rem;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid > *,
+    .card,
+    .step,
+    .term,
+    .callout {
+      min-width: 0;
+    }
+
+    .card,
+    .callout,
+    .term,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card h3,
+    .term h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 5px solid var(--green);
+      background: var(--soft-green);
+    }
+
+    .callout.warning {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .callout.danger {
+      border-left-color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+
+    .step {
+      min-height: 126px;
+      padding: 13px;
+      background: #fbfdfb;
+    }
+
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.96rem;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 2px 4px 2px 0;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .tag.green {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .tag.red {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef7f1;
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    details {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .visual {
+      width: 100%;
+      min-height: 230px;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .source-slide {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    .source-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e5ebe7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .source-slide figcaption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .term {
+      padding: 14px;
+      background: #fbfdfb;
+    }
+
+    .term strong {
+      color: var(--green);
+    }
+
+    .quiz {
+      counter-reset: quiz;
+    }
+
+    .quiz details {
+      counter-increment: quiz;
+    }
+
+    .quiz summary::before {
+      content: counter(quiz) ". ";
+      color: var(--green);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .flow,
+      .grid.three,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 34px 18px 26px;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      section {
+        padding: 20px 16px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      table thead,
+      table tbody {
+        display: table;
+        width: 100%;
+        min-width: 640px;
+      }
+
+      .source-pill {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Machine Learning 2021 Spring · Lesson 06</p>
+      <h1>Adaptive Learning Rate: 训练卡住时，先别怪 Critical Point</h1>
+      <p>
+        这节课把上一讲的 `small gradient / critical point` 往前推进一步：很多时候 training loss 停住，
+        gradient 并不小，真正的问题是同一个 learning rate 无法同时适配陡峭和平坦方向。
+      </p>
+      <div class="source-row" aria-label="local source files">
+        <a class="source-pill" href="slides/06-learning-rate-optimizer-v4.pdf">Slide PDF: 06</a>
+        <a class="source-pill" href="transcripts/06-learning-rate.md">Transcript: Lesson 06</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="Table of contents">
+      <strong>学习路线</strong>
+      <a href="#map">1. 这节课在解决什么</a>
+      <a href="#diagnosis">2. Loss 停住不等于 small gradient</a>
+      <a href="#ravine">3. Learning rate 的峡谷问题</a>
+      <a href="#adaptive">4. Adaptive learning rate</a>
+      <a href="#adagrad">5. Adagrad / RMS</a>
+      <a href="#rmsprop">6. RMSProp</a>
+      <a href="#adam">7. Adam</a>
+      <a href="#scheduling">8. Scheduling: decay / warm up</a>
+      <a href="#practice">9. 实践判断表</a>
+      <a href="#quiz">10. 自测</a>
+      <a href="#glossary">11. 术语表</a>
+    </nav>
+
+    <main>
+      <section id="map">
+        <h2>1. 这节课在解决什么</h2>
+        <p class="lead">
+          核心问题：`gradient descent` 用一个固定 learning rate 更新所有参数，遇到复杂 error surface 时会很笨。
+          这节课的答案是让 step size 变得更聪明：不同参数、不同时刻，用不同 effective learning rate。
+        </p>
+
+        <div class="flow" aria-label="lesson flow">
+          <div class="step">
+            <span class="num">1</span>
+            <strong>先诊断</strong>
+            <span>Loss 停住时，检查 `gradient norm`，不要直接说卡在 critical point。</span>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <strong>发现真问题</strong>
+            <span>在峡谷地形里，step 太大震荡，step 太小又走不动。</span>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <strong>参数级调整</strong>
+            <span>平坦方向 learning rate 大，陡峭方向 learning rate 小。</span>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <strong>Optimizer</strong>
+            <span>`Adagrad`、`RMSProp`、`Adam` 都是在改 update 规则。</span>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <strong>时间级调整</strong>
+            <span>`learning rate decay` 与 `warm up` 让全局 step 随训练阶段变化。</span>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <strong>实用提醒：</strong>这节课不是让你手写 Adam，而是让你知道 optimizer 在解决什么。
+          实践里通常先用 PyTorch 的 `Adam` 默认参数，再根据曲线和任务需要调整。
+        </div>
+      </section>
+
+      <section id="diagnosis">
+        <h2>2. Loss 停住不等于 Small Gradient</h2>
+        <p>
+          上一讲讨论了 `critical point`，但这一讲一开始就纠正一个常见误判：
+          training loss 不再下降，不代表 gradient 已经很小。你必须看 `gradient norm`。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="loss stuck but gradient norm remains large">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"></path>
+            </marker>
+          </defs>
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="18" fill="#17212b" font-weight="700">Training curves</text>
+          <line x1="80" y1="252" x2="900" y2="252" stroke="#dce3df" stroke-width="2"></line>
+          <line x1="80" y1="58" x2="80" y2="252" stroke="#dce3df" stroke-width="2"></line>
+          <path d="M90 76 C180 104, 240 143, 320 174 C395 203, 470 210, 560 213 C660 216, 760 215, 890 216" fill="none" stroke="#0f766e" stroke-width="5"></path>
+          <path d="M90 224 C190 155, 280 198, 380 150 C490 198, 570 132, 670 166 C760 128, 830 160, 900 112" fill="none" stroke="#b45309" stroke-width="4" stroke-dasharray="10 7"></path>
+          <text x="720" y="206" font-size="16" fill="#0f766e" font-weight="700">loss stuck</text>
+          <text x="690" y="105" font-size="16" fill="#b45309" font-weight="700">gradient norm not small</text>
+          <path d="M760 196 L760 128" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)"></path>
+          <text x="590" y="75" font-size="15" fill="#5e6b76">loss 平了，但 gradient 仍可能很大</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-02-training-stuck-not-small-gradient.png" alt="Original slide 2 showing training stuck is not necessarily small gradient." loading="lazy">
+          <figcaption>PDF slide 2: 原始讲义把 loss curve 和 gradient norm 放在一起，强调 training stuck 不等于 small gradient。</figcaption>
+        </figure>
+
+        <table>
+          <thead>
+            <tr>
+              <th>观察</th>
+              <th>不要直接说</th>
+              <th>更好的诊断</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Training loss 停住</td>
+              <td>“卡在 local minima / saddle point”</td>
+              <td>先看 gradient norm 是否真的接近 0。</td>
+            </tr>
+            <tr>
+              <td>Loss 不降，但 gradient norm 还大</td>
+              <td>“已经没有方向可走”</td>
+              <td>更可能是在 error surface 峡谷两壁间震荡，方向有但 step 不合适。</td>
+            </tr>
+            <tr>
+              <td>普通 gradient descent 很难真正走到 critical point</td>
+              <td>“critical point 是最大魔王”</td>
+              <td>当前这讲更关注 learning rate 与 optimizer 的问题。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="ravine">
+        <h2>3. Learning Rate 的峡谷问题</h2>
+        <p>
+          讲义用一个 `convex` error surface 做反直觉例子：就算地形没有复杂的 local minima，
+          gradient descent 也可能训练不好。原因是同一个 learning rate 在不同方向上不合适。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 330" role="img" aria-label="ravine learning rate problem">
+          <rect width="980" height="330" fill="#fbfcff"></rect>
+          <text x="55" y="40" font-size="20" fill="#17212b" font-weight="700">Same learning rate, two bad outcomes</text>
+          <g transform="translate(70 75)">
+            <ellipse cx="180" cy="115" rx="155" ry="48" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <ellipse cx="180" cy="115" rx="105" ry="32" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <ellipse cx="180" cy="115" rx="48" ry="15" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <circle cx="180" cy="115" r="7" fill="#0f766e"></circle>
+            <path d="M65 62 L300 160 L88 73 L288 154 L112 82 L270 146" fill="none" stroke="#b91c1c" stroke-width="4"></path>
+            <text x="38" y="224" font-size="17" fill="#b91c1c" font-weight="700">η too large: oscillation</text>
+            <text x="52" y="246" font-size="14" fill="#5e6b76">在陡峭方向跨太大，不断撞谷壁</text>
+          </g>
+          <g transform="translate(535 75)">
+            <ellipse cx="180" cy="115" rx="155" ry="48" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <ellipse cx="180" cy="115" rx="105" ry="32" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <ellipse cx="180" cy="115" rx="48" ry="15" fill="none" stroke="#d1d5db" stroke-width="3"></ellipse>
+            <circle cx="180" cy="115" r="7" fill="#0f766e"></circle>
+            <path d="M70 62 C90 88, 115 104, 142 112 C157 116, 166 117, 176 117" fill="none" stroke="#2563eb" stroke-width="4" stroke-dasharray="6 7"></path>
+            <text x="38" y="224" font-size="17" fill="#2563eb" font-weight="700">η too small: painfully slow</text>
+            <text x="38" y="246" font-size="14" fill="#5e6b76">到了平坦方向，十万步也接近不了终点</text>
+          </g>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-04-convex-learning-rate-problem.png" alt="Original slide 4 showing a convex error surface with learning rate 10^-2 and 10^-7 problems." loading="lazy">
+          <figcaption>PDF slide 4: 同一个 convex error surface，`η = 10^-2` 会震荡，`η = 10^-7` 又太慢。</figcaption>
+        </figure>
+
+        <div class="callout danger">
+          <strong>关键教训：</strong>固定 learning rate 不是“调小就万事大吉”。
+          太大时过山谷，太小时在平坦方向走不动；所以需要按参数方向调整。
+        </div>
+      </section>
+
+      <section id="adaptive">
+        <h2>4. Adaptive Learning Rate：每个参数自己的步伐</h2>
+        <p>
+          原始 gradient descent 对所有参数用同一个 `η`。这节课改成对每个参数 `θ_i`，
+          使用 `η / σ_i^t` 作为 effective learning rate。
+        </p>
+
+        <div class="formula">
+          vanilla: θ_i^{t+1} ← θ_i^t - η g_i^t<br>
+          adaptive: θ_i^{t+1} ← θ_i^t - (η / σ_i^t) g_i^t
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>平坦方向</h3>
+            <p>`gradient` 小，表示这个方向上 loss 变化慢。我们希望 step 大一点，不然会走不动。</p>
+            <p><span class="tag green">小 σ</span> → <span class="tag blue">大 effective learning rate</span></p>
+          </div>
+          <div class="card">
+            <h3>陡峭方向</h3>
+            <p>`gradient` 大，表示这个方向上 loss 变化快。我们希望 step 小一点，避免在谷壁间震荡。</p>
+            <p><span class="tag amber">大 σ</span> → <span class="tag red">小 effective learning rate</span></p>
+          </div>
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 290" role="img" aria-label="adaptive learning rate per parameter">
+          <rect width="980" height="290" fill="#fbfcff"></rect>
+          <text x="55" y="42" font-size="20" fill="#17212b" font-weight="700">Per-parameter step size</text>
+          <line x1="90" y1="220" x2="890" y2="220" stroke="#dce3df" stroke-width="2"></line>
+          <line x1="150" y1="245" x2="150" y2="60" stroke="#dce3df" stroke-width="2"></line>
+          <path d="M150 170 C310 165, 430 160, 560 158 C690 156, 795 154, 880 152" fill="none" stroke="#0f766e" stroke-width="5"></path>
+          <path d="M150 70 C210 225, 290 225, 350 70" fill="none" stroke="#b91c1c" stroke-width="5"></path>
+          <text x="555" y="144" font-size="16" fill="#0f766e" font-weight="700">flat direction: larger step</text>
+          <text x="255" y="64" font-size="16" fill="#b91c1c" font-weight="700">steep direction: smaller step</text>
+          <path d="M600 185 L735 183" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"></path>
+          <path d="M245 138 L270 172" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"></path>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-05-parameter-dependent-learning-rate.png" alt="Original slide 5 showing different parameters need different learning rates." loading="lazy">
+          <figcaption>PDF slide 5: 参数依赖的 learning rate 公式和“陡峭方向小步、平坦方向大步”的原始图。</figcaption>
+        </figure>
+      </section>
+
+      <section id="adagrad">
+        <h2>5. Adagrad / Root Mean Square</h2>
+        <p>
+          `Adagrad` 的做法：用过去看到的 gradients 的 `Root Mean Square` 来当 `σ_i^t`。
+          它只看 gradient 大小，不看方向。
+        </p>
+
+        <div class="formula">
+          σ_i^t = sqrt( (1 / (t + 1)) * Σ_{k=0}^{t} (g_i^k)^2 )<br>
+          θ_i^{t+1} ← θ_i^t - (η / σ_i^t) g_i^t
+        </div>
+
+        <ul>
+          <li>如果某个参数方向过去 gradients 通常小，`σ` 小，effective learning rate 会变大。</li>
+          <li>如果某个参数方向过去 gradients 通常大，`σ` 大，effective learning rate 会变小。</li>
+          <li>第一步时 `σ = |g|`，所以更新幅度主要变成 `±η`；这不是重点，重点是后续累积。</li>
+          <li>Adagrad 用“所有过去 gradients 同等重要”的平均，所以它反应较慢。</li>
+        </ul>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-07-adagrad-rms-intuition.png" alt="Original slide 7 showing Root Mean Square used in Adagrad and different sigma values." loading="lazy">
+          <figcaption>PDF slide 7: Adagrad 用 RMS 让小 gradient 方向走大步、大 gradient 方向走小步。</figcaption>
+        </figure>
+
+        <div class="callout warning">
+          <strong>注意：</strong>Adagrad 能改善峡谷里的前进，但由于它把全部历史都平均进去，
+          如果某方向长期累积了很小的 `σ`，后来突然变陡时仍可能 step 过大，出现“喷出去”的现象。
+        </div>
+      </section>
+
+      <section id="rmsprop">
+        <h2>6. RMSProp：让最近的 Gradient 更有影响力</h2>
+        <p>
+          讲义说 `RMSProp` 很传奇：它常见但没有标准论文出处，通常追到 Hinton 的 Coursera 课程。
+          它和 Adagrad 的差别是：不是所有过去 gradients 同等重要，而是用 `α` 控制历史与当前 gradient 的权重。
+        </p>
+
+        <div class="formula">
+          σ_i^t = sqrt( α (σ_i^{t-1})^2 + (1 - α) (g_i^t)^2 ), 0 &lt; α &lt; 1
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="rmsprop dynamic response">
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <path d="M70 200 C180 200, 240 198, 325 195 C365 188, 390 80, 455 72 C520 64, 555 184, 610 194 C715 210, 820 204, 910 198" fill="none" stroke="#17212b" stroke-width="5"></path>
+          <circle cx="190" cy="200" r="9" fill="#0f766e"></circle>
+          <circle cx="420" cy="78" r="9" fill="#b91c1c"></circle>
+          <circle cx="720" cy="205" r="9" fill="#0f766e"></circle>
+          <text x="130" y="236" font-size="16" fill="#0f766e" font-weight="700">flat: small σ, larger step</text>
+          <text x="350" y="48" font-size="16" fill="#b91c1c" font-weight="700">steep: increase σ, brake</text>
+          <text x="650" y="240" font-size="16" fill="#0f766e" font-weight="700">flat again: decrease σ</text>
+          <path d="M210 200 L300 197" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"></path>
+          <path d="M430 78 L450 86" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)"></path>
+          <path d="M740 205 L835 201" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"></path>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-10-rmsprop-dynamic-adaptation.png" alt="Original slide 10 showing RMSProp recent gradient influence and dynamic sigma changes." loading="lazy">
+          <figcaption>PDF slide 10: RMSProp 用 `α` 让近期 gradient 对 `σ` 有更大影响，能更快刹车或加速。</figcaption>
+        </figure>
+
+        <table>
+          <thead>
+            <tr>
+              <th>α 的直觉</th>
+              <th>效果</th>
+              <th>风险</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>α 较小，当前 gradient 权重大</td>
+              <td>对地形变化反应快</td>
+              <td>可能更敏感、更抖</td>
+            </tr>
+            <tr>
+              <td>α 较大，历史统计权重大</td>
+              <td>更平滑、更稳定</td>
+              <td>遇到地形变化时反应慢</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="adam">
+        <h2>7. Adam = RMSProp + Momentum</h2>
+        <p>
+          `Adam` 是今天最常用的 optimizer 之一。课程给的实用结论很直接：
+          Adam 的细节 PyTorch 已经实现好了，默认 hyperparameters 往往够用，乱调不一定更好。
+        </p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Momentum 负责方向</h3>
+            <p>把过去 gradients 做 weighted sum，保留正负号，考虑“往左还是往右”。</p>
+          </div>
+          <div class="card">
+            <h3>RMSProp 负责大小</h3>
+            <p>把 gradients 平方后统计大小，忽略方向，用来缩放 step size。</p>
+          </div>
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-11-adam-rmsprop-momentum.png" alt="Original slide 11 showing Adam as RMSProp plus momentum with original paper link." loading="lazy">
+          <figcaption>PDF slide 11: Adam 的原始论文和它结合 momentum / RMSProp 的结构。</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>实践上怎么用：</strong>如果你只是想把模型训练起来，优先使用框架里的 `Adam`，先不要过早手调内部参数。
+          真要调，先看 loss、gradient norm、validation 曲线，再决定是否改 learning rate、batch size 或 schedule。
+        </div>
+      </section>
+
+      <section id="scheduling">
+        <h2>8. Learning Rate Scheduling: Decay / Warm Up</h2>
+        <p>
+          前面讲的 `σ_i^t` 是 parameter-dependent 和 iteration-dependent 的缩放因子。
+          但全局的 `η` 也可以随时间变化，记作 `η_t`。这就是 `learning rate scheduling`。
+        </p>
+
+        <div class="formula">
+          θ_i^{t+1} ← θ_i^t - (η_t / σ_i^t) m_i^t
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 320" role="img" aria-label="learning rate decay and warm up curves">
+          <rect width="980" height="320" fill="#fbfcff"></rect>
+          <text x="58" y="42" font-size="20" fill="#17212b" font-weight="700">Learning rate over time</text>
+          <g transform="translate(90 80)">
+            <line x1="0" y1="180" x2="330" y2="180" stroke="#dce3df" stroke-width="2"></line>
+            <line x1="0" y1="180" x2="0" y2="10" stroke="#dce3df" stroke-width="2"></line>
+            <path d="M0 42 C70 60, 130 90, 190 120 C240 145, 285 162, 330 170" fill="none" stroke="#0f766e" stroke-width="5"></path>
+            <text x="55" y="218" font-size="17" fill="#0f766e" font-weight="700">Learning Rate Decay</text>
+            <text x="38" y="240" font-size="14" fill="#5e6b76">越接近终点，步伐越小</text>
+          </g>
+          <g transform="translate(560 80)">
+            <line x1="0" y1="180" x2="330" y2="180" stroke="#dce3df" stroke-width="2"></line>
+            <line x1="0" y1="180" x2="0" y2="10" stroke="#dce3df" stroke-width="2"></line>
+            <path d="M0 170 C60 128, 100 85, 140 42 C200 80, 260 130, 330 170" fill="none" stroke="#2563eb" stroke-width="5"></path>
+            <text x="84" y="218" font-size="17" fill="#2563eb" font-weight="700">Warm Up</text>
+            <text x="22" y="240" font-size="14" fill="#5e6b76">先变大，再 decay</text>
+          </g>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-14-learning-rate-scheduling.png" alt="Original slide 14 showing learning rate decay and warm up schedules." loading="lazy">
+          <figcaption>PDF slide 14: `learning rate decay` 与 `warm up` 两种 schedule 的原始讲义图。</figcaption>
+        </figure>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Learning Rate Decay</h3>
+            <p>随着 training 进行，参数通常越来越接近目标，所以全局 `η_t` 逐渐变小，相当于踩刹车。</p>
+          </div>
+          <div class="card">
+            <h3>Warm Up</h3>
+            <p>Learning rate 先变大再变小。ResNet、Transformer、BERT 相关训练里都能看到这种策略。</p>
+          </div>
+        </div>
+
+        <details>
+          <summary>为什么 Warm Up 可能有用</summary>
+          <p>
+            课程给出的可能解释：Adam/RMSProp/Adagrad 都要估计 `σ`，而 `σ` 是统计结果。
+            刚开始看到的数据少，估计不稳定；先用较小 learning rate 在初始附近收集 error surface 信息，
+            等 `σ` 估计更可靠后再逐步增大 learning rate。
+          </p>
+          <p>
+            这不是完全定论。讲义也指出 warm up 为什么有效仍是可研究问题，并提到可以继续看 `RAdam`。
+          </p>
+        </details>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-17-optimization-summary.png" alt="Original slide 17 summarizing optimization improvements from vanilla gradient descent to momentum, RMS, and scheduling." loading="lazy">
+          <figcaption>PDF slide 17: 本节 optimization 总结：`momentum` 管方向，`σ` 管大小，`η_t` 管训练阶段。</figcaption>
+        </figure>
+      </section>
+
+      <section id="practice">
+        <h2>9. 实践判断表</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>训练现象</th>
+              <th>这节课的解释</th>
+              <th>实际动作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Loss 停住</td>
+              <td>不一定是 critical point</td>
+              <td>记录并查看 `gradient norm`。</td>
+            </tr>
+            <tr>
+              <td>Loss 不降但 gradient norm 大</td>
+              <td>可能在峡谷两边震荡，learning rate 不适合</td>
+              <td>尝试 adaptive optimizer，如 `Adam`；或降低全局 learning rate。</td>
+            </tr>
+            <tr>
+              <td>训练很慢，尤其平坦方向走不动</td>
+              <td>某些参数方向需要更大的 effective learning rate</td>
+              <td>使用 `Adagrad` / `RMSProp` / `Adam` 这类 per-parameter scaling。</td>
+            </tr>
+            <tr>
+              <td>初期训练不稳定</td>
+              <td>早期 `σ` 统计不准，step 可能不稳</td>
+              <td>使用 warm up，或先用较保守 learning rate。</td>
+            </tr>
+            <tr>
+              <td>后期接近目标但会乱喷或震荡</td>
+              <td>全局 step 仍太大</td>
+              <td>使用 learning rate decay / scheduler。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <strong>最小可执行建议：</strong>先用 `Adam` 默认参数训练，画 training loss / validation metric，
+          记录 gradient norm。只有曲线说明问题时，再调 learning rate、schedule、batch size。
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-06-learning-rate/slide-19-next-time-error-surface.png" alt="Original slide 19 previewing the next lesson about changing the error surface." loading="lazy">
+          <figcaption>PDF slide 19: 下一步从“绕过崎岖 error surface”转向“改变 network 让 error surface 更好 train”。</figcaption>
+        </figure>
+      </section>
+
+      <section id="quiz" class="quiz">
+        <h2>10. 自测</h2>
+        <details>
+          <summary>Training loss 停住时，为什么不能直接说卡在 critical point？</summary>
+          <p>Critical point 意味着 gradient 接近或等于 0。Loss 停住时 gradient norm 可能仍然很大，只是在谷壁间震荡或 step 不合适。</p>
+        </details>
+        <details>
+          <summary>为什么固定 learning rate 在峡谷地形里很难用？</summary>
+          <p>陡峭方向需要小 step，平坦方向需要大 step；同一个 `η` 无法同时满足两者。</p>
+        </details>
+        <details>
+          <summary>`σ_i^t` 在 adaptive learning rate 里扮演什么角色？</summary>
+          <p>它缩放第 i 个参数的 effective learning rate。`σ` 大时 step 小，`σ` 小时 step 大。</p>
+        </details>
+        <details>
+          <summary>Adagrad 和 RMSProp 的差别是什么？</summary>
+          <p>Adagrad 用所有过去 gradients 的 RMS，历史同等重要；RMSProp 用 `α` 让最近 gradient 可以有更大影响。</p>
+        </details>
+        <details>
+          <summary>Adam 为什么不是 Momentum 和 RMSProp 互相抵消？</summary>
+          <p>Momentum 保留 gradient 的方向和正负号；RMS / `σ` 用平方只统计大小，不看方向。</p>
+        </details>
+        <details>
+          <summary>Warm Up 的一个可能解释是什么？</summary>
+          <p>刚开始 `σ` 的统计不稳定，先用小 learning rate 收集局部信息，再逐步提高 learning rate。</p>
+        </details>
+      </section>
+
+      <section id="glossary">
+        <h2>11. 术语表</h2>
+        <div class="grid two">
+          <div class="term"><strong>Learning Rate</strong>：每次参数更新的基础步伐大小，常记为 `η`。</div>
+          <div class="term"><strong>Adaptive Learning Rate</strong>：让不同参数或不同时间拥有不同 effective learning rate。</div>
+          <div class="term"><strong>Gradient Norm</strong>：gradient 向量长度，用来判断 gradient 是否真的小。</div>
+          <div class="term"><strong>Effective Learning Rate</strong>：实际作用在某个参数上的学习率，如 `η / σ_i^t`。</div>
+          <div class="term"><strong>Root Mean Square</strong>：平方后平均再开根号，用来统计 gradient 大小。</div>
+          <div class="term"><strong>Adagrad</strong>：用过去所有 gradients 的 RMS 调整每个参数 step size 的 optimizer。</div>
+          <div class="term"><strong>RMSProp</strong>：用 `α` 控制历史和当前 gradient 权重的 adaptive optimizer。</div>
+          <div class="term"><strong>Adam</strong>：结合 RMSProp 和 Momentum 的常用 optimizer。</div>
+          <div class="term"><strong>Learning Rate Decay</strong>：训练越往后，全局 learning rate 越小。</div>
+          <div class="term"><strong>Warm Up</strong>：learning rate 先逐渐变大，再进入下降阶段。</div>
+          <div class="term"><strong>Optimizer</strong>：参数更新策略；不只是 vanilla gradient descent。</div>
+          <div class="term"><strong>Scheduler</strong>：控制 `η_t` 随训练时间变化的机制。</div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <p class="footer-note">
+          本页基于本地材料整理：`slides/06-learning-rate-optimizer-v4.pdf` 与
+          `transcripts/06-learning-rate.md`。PDF slide screenshots are local teaching assets under
+          `teaching-assets/lesson-06-learning-rate/`.
+        </p>
+        <p class="footer-note">
+          Slide 中提到的延伸材料包括 Adam 论文
+          <a href="https://arxiv.org/pdf/1412.6980.pdf">arXiv:1412.6980</a>、
+          ResNet <a href="https://arxiv.org/abs/1512.03385">arXiv:1512.03385</a>、
+          Transformer <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a>、
+          RAdam <a href="https://arxiv.org/abs/1908.03265">arXiv:1908.03265</a>。
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

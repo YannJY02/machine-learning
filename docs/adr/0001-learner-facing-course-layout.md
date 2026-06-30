@@ -1,0 +1,3 @@
+# Learner-Facing Course Layout
+
+Use a lecture-first Course Skeleton under `courses/ml2021-spring/units/`, with each Study Unit keeping its notes, slides, source references, and related Homework Modules together. Official PDFs, datasets, and starter notebooks are Local Course Assets inside the relevant unit or homework folder, but remain git-ignored; the old centralized `resources/` registry and its sync script are removed after useful provenance and source information is moved into learner-facing folders. This favors studying from one lesson folder over maintaining a detached resource mirror, while still keeping large or generated files out of git.

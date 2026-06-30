@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ML2021 Lesson 04-05: Why Training Fails</title>
+  <style>
+    :root {
+      --bg: #f6f8f5;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #5e6b76;
+      --line: #dce3df;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --green: #15803d;
+      --violet: #6d28d9;
+      --soft-teal: #e5f5f2;
+      --soft-blue: #e9f0ff;
+      --soft-amber: #fff3df;
+      --soft-red: #fff0f0;
+      --shadow: 0 16px 40px rgba(23, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #17312f 0%, #214b54 58%, #6f4d17 100%);
+      color: #fff;
+      padding: 44px 24px 32px;
+    }
+
+    .hero-inner,
+    .shell {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #cdeee7;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin: 0;
+      font-size: clamp(2.15rem, 5vw, 4rem);
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin: 16px 0 0;
+      color: #eaf5f1;
+      font-size: 1.05rem;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 0.88rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 24px;
+      padding: 26px 0 56px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.96rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid #edf1ee;
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      margin-bottom: 22px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.65rem;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid > *,
+    .card,
+    .step,
+    .term,
+    .callout {
+      min-width: 0;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .callout,
+    .term,
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .card h3,
+    .term h3 {
+      margin-top: 0;
+    }
+
+    .callout {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 5px solid var(--teal);
+      background: var(--soft-teal);
+    }
+
+    .callout.warning {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .callout.danger {
+      border-left-color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+
+    .step {
+      min-height: 126px;
+      padding: 13px;
+      background: #fbfdfc;
+    }
+
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      margin-bottom: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      overflow-x: auto;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.96rem;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin: 2px 4px 2px 0;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .tag.teal {
+      background: var(--soft-teal);
+      color: var(--teal);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .tag.red {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #edf5f3;
+      font-weight: 750;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    details {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfc;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .visual {
+      width: 100%;
+      min-height: 230px;
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    .source-slide {
+      margin: 16px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfc;
+    }
+
+    .source-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e5ebe7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .source-slide figcaption {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    svg text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .term {
+      padding: 14px;
+      background: #fbfdfc;
+    }
+
+    .term strong {
+      color: var(--teal);
+    }
+
+    .quiz {
+      counter-reset: quiz;
+    }
+
+    .quiz details {
+      counter-increment: quiz;
+    }
+
+    .quiz summary::before {
+      content: counter(quiz) ". ";
+      color: var(--teal);
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .flow,
+      .grid.three {
+        grid-template-columns: 1fr;
+      }
+
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 34px 18px 26px;
+      }
+
+      .hero-inner,
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      section {
+        padding: 20px 16px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      table thead,
+      table tbody {
+        display: table;
+        width: 100%;
+        min-width: 620px;
+      }
+
+      .source-pill {
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Machine Learning 2021 Spring · Lesson 04-05</p>
+      <h1>Training Fails: Small Gradient, Batch, Momentum</h1>
+      <p>
+        这份学习页把李宏毅 ML2021 第 04 讲的 transcript 与合并版 slide PDF 串成一条实用学习线：
+        先诊断为什么 training loss 不降，再理解 critical point、Hessian、batch size 和 momentum 对训练的影响。
+      </p>
+      <div class="source-row" aria-label="local source files">
+        <a class="source-pill" href="slides/04-05-local-minima-batch-momentum-small-gradient-v7.pdf">Slide PDF: 04-05</a>
+        <a class="source-pill" href="transcripts/04-local-minima-saddle-point.md">Transcript: Lesson 04</a>
+        <a class="source-pill" href="transcripts/05-batch-momentum.md">Transcript: Lesson 05 extension</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="toc" aria-label="Table of contents">
+      <strong>学习路线</strong>
+      <a href="#map">1. 这节课在解决什么</a>
+      <a href="#diagnosis">2. 先判断是哪类失败</a>
+      <a href="#critical">3. Small Gradient 与 Critical Point</a>
+      <a href="#hessian">4. Hessian 的逻辑</a>
+      <a href="#example">5. 两参数 network 例子</a>
+      <a href="#high-dim">6. 高维空间的直觉</a>
+      <a href="#batch">7. Batch 的真实作用</a>
+      <a href="#generalization">8. Flat / Sharp Minima</a>
+      <a href="#momentum">9. Momentum</a>
+      <a href="#practice">10. 实践判断表</a>
+      <a href="#quiz">11. 自测</a>
+      <a href="#glossary">12. 术语表</a>
+    </nav>
+
+    <main>
+      <section id="map">
+        <h2>1. 这节课在解决什么</h2>
+        <p class="lead">
+          主题不是 `Overfitting`，而是 `Optimization`：当你发现 training loss 不再下降，而且这个 loss 还不够好，
+          说明模型能力可能没有被训练过程发挥出来。
+        </p>
+
+        <div class="flow" aria-label="lesson flow">
+          <div class="step">
+            <span class="num">1</span>
+            <strong>Training loss 停住</strong>
+            <span>先不要急着说模型不够强，也不要急着说 overfitting。</span>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <strong>Gradient 很小</strong>
+            <span>参数更新变慢或停止，可能靠近 `critical point`。</span>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <strong>Critical point 分类</strong>
+            <span>`local minima`、`local maxima`、`saddle point` 都可能让 gradient 为零。</span>
+          </div>
+          <div class="step">
+            <span class="num">4</span>
+            <strong>看局部地形</strong>
+            <span>用 `Hessian` 的 eigenvalues 判断附近有没有下降方向。</span>
+          </div>
+          <div class="step">
+            <span class="num">5</span>
+            <strong>训练技巧</strong>
+            <span>`small batch` 和 `momentum` 都是在帮 optimizer 继续走。</span>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <strong>实用语言提醒：</strong>讲深度学习训练失败时，不要随口说“卡在 local minima”。
+          更准确的说法是“training loss 停住，可能遇到 small gradient 或 critical point；critical point 可能是 saddle point 或 local minima”。
+        </div>
+      </section>
+
+      <section id="diagnosis">
+        <h2>2. 先判断是哪类失败</h2>
+        <p>
+          这节课的第一条实用分界线：看 `training loss`。如果 training loss 本身降不下去，
+          这是 `Optimization` 问题；如果 training loss 很低但 validation/testing 表现差，那才是 `Overfitting` 或 `Generalization` 问题。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>观察到的曲线</th>
+              <th>更可能的问题</th>
+              <th>这节课给你的下一步</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Training loss 高，而且停住</td>
+              <td>`Optimization` failure</td>
+              <td>检查 small gradient、batch size、optimizer / momentum。</td>
+            </tr>
+            <tr>
+              <td>Training loss 很低，validation/testing loss 高</td>
+              <td>`Overfitting` / poor generalization</td>
+              <td>不是本讲主线；但 batch size 会影响 generalization。</td>
+            </tr>
+            <tr>
+              <td>大 batch 下 training 与 validation 都差</td>
+              <td>不是 model bias，而是 optimization 可能变差</td>
+              <td>尝试较小 batch 或大 batch 专用训练策略。</td>
+            </tr>
+            <tr>
+              <td>大/小 batch training 差不多，但大 batch testing 更差</td>
+              <td>Generalization gap</td>
+              <td>用 flat/sharp minima 的直觉理解风险。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="critical">
+        <h2>3. Small Gradient 与 Critical Point</h2>
+        <p>
+          `Gradient descent` 靠 gradient 更新参数。如果 gradient 接近 0，更新会非常慢；如果 gradient 等于 0，
+          vanilla gradient descent 没有方向可走。这个点统称为 `critical point`。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="small gradient landscape">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"></path>
+            </marker>
+          </defs>
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <path d="M50 70 C130 240, 220 245, 300 130 C360 45, 420 82, 470 145 C530 230, 620 230, 680 145 C740 60, 840 85, 930 210" fill="none" stroke="#17212b" stroke-width="5"></path>
+          <line x1="60" y1="250" x2="930" y2="250" stroke="#dce3df" stroke-width="2"></line>
+          <text x="48" y="36" font-size="18" fill="#17212b" font-weight="700">Loss</text>
+          <text x="700" y="282" font-size="18" fill="#17212b" font-weight="700">network parameter w</text>
+
+          <circle cx="285" cy="145" r="7" fill="#b45309"></circle>
+          <text x="210" y="116" font-size="17" fill="#b45309" font-weight="700">plateau</text>
+          <text x="196" y="138" font-size="15" fill="#5e6b76">gradient ≈ 0，走得慢</text>
+
+          <circle cx="475" cy="150" r="8" fill="#6d28d9"></circle>
+          <text x="425" y="104" font-size="17" fill="#6d28d9" font-weight="700">saddle point</text>
+          <text x="408" y="126" font-size="15" fill="#5e6b76">gradient = 0，但有下降路</text>
+
+          <circle cx="635" cy="203" r="8" fill="#b91c1c"></circle>
+          <text x="594" y="174" font-size="17" fill="#b91c1c" font-weight="700">local minima</text>
+          <text x="570" y="196" font-size="15" fill="#5e6b76">附近方向都更高</text>
+
+          <path d="M455 151 C425 170, 395 185, 360 190" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrow)"></path>
+          <text x="310" y="216" font-size="15" fill="#2563eb">escape direction</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-04-05-training-fails/slide-02-optimization-fails.png" alt="Original slide 2 showing optimization failure, local minima, saddle point, and critical point." loading="lazy">
+          <figcaption>PDF slide 2: 原始讲义把 training loss 停住分成 local minima、saddle point 与 critical point 的诊断问题。</figcaption>
+        </figure>
+
+        <div class="grid three">
+          <div class="card">
+            <h3>Local minima</h3>
+            <p>在当前点附近，往任何方向走 loss 都更高。它是“局部最低”，所以靠普通 gradient descent 不知道怎么离开。</p>
+          </div>
+          <div class="card">
+            <h3>Saddle point</h3>
+            <p>Gradient 也是 0，但附近有些方向更高、有些方向更低。它看起来卡住，其实仍有下降方向。</p>
+          </div>
+          <div class="card">
+            <h3>Plateau</h3>
+            <p>Gradient 接近 0，不一定严格等于 0。Training 不一定停住，但会非常慢，曲线像不动。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="hessian">
+        <h2>4. Hessian 的逻辑：不追数学细节，只抓判断方法</h2>
+        <p>
+          Slide 中有一段 “Warning of Math”。对你的学习目的，重点不是会手推每个微分，
+          而是理解：`gradient` 告诉你一阶斜率，`Hessian` 告诉你局部地形的弯曲方式。
+        </p>
+
+        <div class="formula">
+          L(theta) ≈ L(theta') + (theta - theta')^T g + 1/2 (theta - theta')^T H (theta - theta')
+        </div>
+
+        <ul>
+          <li>`theta'` 是当前参数位置，`theta` 是附近另一个参数位置。</li>
+          <li>`g = gradient`，是向量，记录 loss 对每个参数的一阶微分。</li>
+          <li>`H = Hessian`，是矩阵，记录 loss 对参数的二阶微分。</li>
+          <li>在 `critical point`，`g = 0`，所以一阶项消失，局部形状主要看 Hessian 项。</li>
+        </ul>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Hessian / eigenvalue 现象</th>
+              <th>局部地形</th>
+              <th>结论</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>对所有方向 v，v^T H v &gt; 0；所有 eigenvalues 都是正的</td>
+              <td>周围都比当前点高</td>
+              <td><span class="tag teal">local minima</span></td>
+            </tr>
+            <tr>
+              <td>对所有方向 v，v^T H v &lt; 0；所有 eigenvalues 都是负的</td>
+              <td>周围都比当前点低</td>
+              <td><span class="tag red">local maxima</span></td>
+            </tr>
+            <tr>
+              <td>有些 eigenvalues 正、有些负</td>
+              <td>有些方向更高，有些方向更低</td>
+              <td><span class="tag blue">saddle point</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-04-05-training-fails/slide-06-hessian-critical-point.png" alt="Original slide 6 showing Hessian eigenvalue rules for local minima, local maxima, and saddle point." loading="lazy">
+          <figcaption>PDF slide 6: Hessian 在 critical point 的判断规则，作为上面简化表格的原始依据。</figcaption>
+        </figure>
+
+        <details>
+          <summary>为什么 negative eigenvalue 能指出逃离 saddle point 的方向</summary>
+          <p>
+            如果 `u` 是 Hessian 的 eigenvector，对应 eigenvalue 是 `lambda`，那么 `u^T H u = lambda ||u||^2`。
+            当 `lambda &lt; 0` 时，这一项为负。也就是说沿着这个 eigenvector 方向移动，
+            近似后的 loss 会比当前点低。因此 Hessian 不只是能诊断 saddle point，还能指出下降方向。
+          </p>
+          <p>
+            但 slide 和 transcript 都强调：真实 deep network 里几乎不会为了训练真的算完整 Hessian、eigenvalues 和 eigenvectors，
+            成本太高。这段的价值是建立概念，不是给你一个日常训练步骤。
+          </p>
+        </details>
+      </section>
+
+      <section id="example">
+        <h2>5. 两参数 network 例子</h2>
+        <p>
+          讲义用一个极简 network 让 Hessian 判断变得可见：输入 `x = 1`，目标 `y_hat = 1`，
+          模型输出 `y = w1 * w2 * x`。整个模型只有两个参数 `w1` 和 `w2`。
+        </p>
+
+        <div class="formula">
+          L = (y_hat - w1 * w2 * x)^2 = (1 - w1 * w2)^2
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Critical point</h3>
+            <p>在 `(w1, w2) = (0, 0)`，对 `w1` 和 `w2` 的 gradient 都是 0，所以原点是 critical point。</p>
+            <p>但它不是 local minima：沿某些方向走 loss 会变小。</p>
+          </div>
+          <div class="card">
+            <h3>Hessian 判断</h3>
+            <p>原点的 Hessian 是 `[[0, -2], [-2, 0]]`，eigenvalues 是 `2` 和 `-2`。</p>
+            <p>一正一负，所以它是 `saddle point`。对应 `-2` 的 eigenvector 可以取 `[1, 1]`，沿这个方向能降低 loss。</p>
+          </div>
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 300" role="img" aria-label="two parameter example">
+          <rect width="980" height="300" fill="#fbfcff"></rect>
+          <line x1="100" y1="150" x2="880" y2="150" stroke="#cbd5e1" stroke-width="2"></line>
+          <line x1="490" y1="35" x2="490" y2="260" stroke="#cbd5e1" stroke-width="2"></line>
+          <text x="864" y="178" font-size="16" fill="#5e6b76">w1</text>
+          <text x="510" y="52" font-size="16" fill="#5e6b76">w2</text>
+
+          <path d="M150 245 C260 120, 365 78, 488 150 C610 222, 720 178, 835 55" fill="none" stroke="#0f766e" stroke-width="8" opacity="0.78"></path>
+          <path d="M148 54 C270 178, 365 222, 488 150 C620 78, 730 122, 838 244" fill="none" stroke="#0f766e" stroke-width="8" opacity="0.78"></path>
+
+          <circle cx="490" cy="150" r="10" fill="#6d28d9"></circle>
+          <text x="505" y="144" font-size="17" fill="#6d28d9" font-weight="700">(0,0) saddle</text>
+          <text x="570" y="92" font-size="16" fill="#0f766e" font-weight="700">loss = 0 valleys</text>
+          <text x="190" y="72" font-size="15" fill="#5e6b76">w1 * w2 = 1 的两条分支</text>
+
+          <path d="M490 150 L585 55" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <text x="595" y="61" font-size="16" fill="#2563eb" font-weight="700">update along [1,1]</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-04-05-training-fails/slide-07-two-parameter-example.png" alt="Original slide 7 showing the two-parameter network y equals w1 w2 x and its error surface." loading="lazy">
+          <figcaption>PDF slide 7: 两参数 network 与 error surface 原图，用来校准自绘的 saddle / minima 直觉图。</figcaption>
+        </figure>
+
+        <div class="callout">
+          <strong>这例子要你记住的不是手算过程：</strong>一个点 gradient 为 0 并不自动等于 local minima。
+          真正要问的是：附近有没有能让 loss 更低的方向？
+        </div>
+      </section>
+
+      <section id="high-dim">
+        <h2>6. 高维空间的直觉：local minima 可能没有想象中常见</h2>
+        <p>
+          讲义用《三体》中 “Diorena” 的故事做类比：三维里看似封闭的石棺，在更高维空间里可能有路。
+          Loss landscape 也类似：在一维或二维图上看起来像 local minima 的地方，放到更高维参数空间里，
+          可能其实是 saddle point，因为还有你看不见的下降方向。
+        </p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>低维可视化的陷阱</h3>
+            <p>我们常画两参数切片来展示 loss surface。但 deep network 的参数可能是百万、千万级；你看到的二维图只是切片。</p>
+          </div>
+          <div class="card">
+            <h3>Empirical Study 的指标</h3>
+            <p>`Minimum ratio = 正 eigenvalue 数量 / eigenvalue 总数`。越接近 1，越像 local minima。</p>
+            <p>讲义里的实验观察：训练到 gradient 很小的点后，minimum ratio 也常不到真正 local minima；许多点仍有负 eigenvalues。</p>
+          </div>
+        </div>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-04-05-training-fails/slide-15-minimum-ratio.png" alt="Original slide 15 showing empirical study of minimum ratio and training loss." loading="lazy">
+          <figcaption>PDF slide 15: minimum ratio 的经验观察，说明很多 critical points 并不是真正 local minima。</figcaption>
+        </figure>
+
+        <div class="callout warning">
+          <strong>实践解释：</strong>当训练停住时，真正常见的说法是 small gradient、plateau 或 saddle point，
+          而不是直接归因于 local minima。
+        </div>
+      </section>
+
+      <section id="batch">
+        <h2>7. Batch 的真实作用</h2>
+        <p>
+          这里的 `Batch` 和常见的 `Mini-batch` 指同一件事：不要一次用全部 training data 计算 loss/gradient，
+          而是把数据分成多个 batch，每次用一个 batch 计算 loss、gradient，然后 update 参数。
+        </p>
+
+        <div class="grid three">
+          <div class="card">
+            <h3>Batch size B</h3>
+            <p>每次 update 用 B 笔资料。B 越小，update 越频繁，也越 noisy。</p>
+          </div>
+          <div class="card">
+            <h3>Epoch</h3>
+            <p>所有 batches 都被看过一次，叫一个 epoch。不是 update 一次就叫 epoch。</p>
+          </div>
+          <div class="card">
+            <h3>Shuffle</h3>
+            <p>每个 epoch 开始前重新分 batch，使同一批里的样本组合变化，避免固定组合。</p>
+          </div>
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 320" role="img" aria-label="small batch and large batch update comparison">
+          <rect width="980" height="320" fill="#fbfcff"></rect>
+          <text x="60" y="45" font-size="22" fill="#17212b" font-weight="700">N = 20 examples</text>
+
+          <text x="80" y="91" font-size="18" fill="#0f766e" font-weight="700">Full batch: batch size = N</text>
+          <rect x="80" y="112" width="360" height="48" rx="8" fill="#e5f5f2" stroke="#0f766e"></rect>
+          <text x="190" y="143" font-size="16" fill="#0f766e">看完 20 笔资料</text>
+          <path d="M445 136 L530 136" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <circle cx="560" cy="136" r="20" fill="#2563eb"></circle>
+          <text x="552" y="142" font-size="17" fill="#fff" font-weight="700">1</text>
+          <text x="590" y="142" font-size="16" fill="#5e6b76">一个 epoch 只 update 1 次，方向稳定</text>
+
+          <text x="80" y="214" font-size="18" fill="#b45309" font-weight="700">Small batch: batch size = 1</text>
+          <g transform="translate(80 236)">
+            <rect width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <rect x="24" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <rect x="48" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <rect x="72" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <rect x="96" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <text x="128" y="22" font-size="16" fill="#b45309">...</text>
+            <rect x="168" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+            <rect x="192" width="18" height="32" rx="4" fill="#fff3df" stroke="#b45309"></rect>
+          </g>
+          <path d="M315 252 C365 220, 420 286, 470 246 C520 206, 560 270, 610 236" stroke="#2563eb" stroke-width="4" fill="none" marker-end="url(#arrow)"></path>
+          <text x="640" y="242" font-size="16" fill="#5e6b76">一个 epoch update 20 次，方向 noisy</text>
+        </svg>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-04-05-training-fails/slide-19-batch-review.png" alt="Original slide 19 showing optimization with batches, one epoch, and shuffle." loading="lazy">
+            <figcaption>PDF slide 19: batch、epoch、shuffle 的原始流程图。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-04-05-training-fails/slide-24-batch-performance.png" alt="Original slide 24 showing MNIST and CIFAR-10 performance with different batch sizes." loading="lazy">
+            <figcaption>PDF slide 24: MNIST / CIFAR-10 实验，说明较小 batch size 在结果上可能更好。</figcaption>
+          </figure>
+        </div>
+
+        <h3>Batch size 与速度：直觉会误导你</h3>
+        <ul>
+          <li>没有平行运算时：小 batch 每次 update 较快，大 batch 每次 update 较慢。</li>
+          <li>有 GPU 平行运算时：batch size 从 1 到 1000，每次 update 时间可能差不多。</li>
+          <li>GPU 平行能力有极限：batch size 到 10000 或 60000，单次 update 时间会增加。</li>
+          <li>看完一个 epoch 的时间：小 batch update 次数太多，反而可能更慢；大 batch update 次数少，反而更快。</li>
+        </ul>
+
+        <h3>Batch size 与训练结果：noisy 不一定坏</h3>
+        <p>
+          讲义中的 MNIST / CIFAR-10 实验显示，batch size 变大时，training accuracy 和 validation accuracy 都可能变差。
+          这不是 overfitting，因为 training 也变差；这是 optimization 变差。
+        </p>
+        <p>
+          Small batch 的直觉解释：每个 batch 都有自己的 loss function。你在 `L1` 上卡住，不代表在 `L2` 上也卡住。
+          下一批数据带来的 noise 可能把 optimizer 推出 saddle point 或狭窄区域。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>比较项</th>
+              <th>Small batch</th>
+              <th>Large batch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>单次 update，无平行运算</td>
+              <td>较快</td>
+              <td>较慢</td>
+            </tr>
+            <tr>
+              <td>单次 update，有平行运算</td>
+              <td>差不多</td>
+              <td>不太大时差不多</td>
+            </tr>
+            <tr>
+              <td>一个 epoch 时间</td>
+              <td>较慢</td>
+              <td>较快</td>
+            </tr>
+            <tr>
+              <td>Gradient</td>
+              <td>Noisy</td>
+              <td>Stable</td>
+            </tr>
+            <tr>
+              <td>Optimization</td>
+              <td>常较好</td>
+              <td>可能较差</td>
+            </tr>
+            <tr>
+              <td>Generalization</td>
+              <td>常较好</td>
+              <td>可能较差</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <strong>实用结论：</strong>`batch size` 是 hyperparameter。它不是只影响速度，也会影响 optimization 和 generalization。
+        </div>
+      </section>
+
+      <section id="generalization">
+        <h2>8. Small batch 为什么可能对 testing 更好</h2>
+        <p>
+          Slide 引用论文 <em>On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima</em>。
+          关键现象是：即使 large batch 和 small batch 在 training 上都训练得很好，testing 上 small batch 也可能更好。
+        </p>
+
+        <svg class="visual" viewBox="0 0 980 320" role="img" aria-label="flat minima and sharp minima">
+          <rect width="980" height="320" fill="#fbfcff"></rect>
+          <line x1="70" y1="260" x2="920" y2="260" stroke="#dce3df" stroke-width="2"></line>
+          <text x="70" y="42" font-size="18" fill="#17212b" font-weight="700">Training Loss</text>
+
+          <path d="M80 120 C170 255, 280 255, 370 120 C415 60, 450 62, 480 118 C520 188, 565 188, 600 118 C635 62, 680 62, 725 120 C800 250, 875 250, 920 120" fill="none" stroke="#17212b" stroke-width="5"></path>
+          <path d="M110 132 C210 245, 300 245, 390 130" fill="none" stroke="#0f766e" stroke-width="10" opacity="0.72"></path>
+          <path d="M595 118 C632 62, 680 62, 720 118" fill="none" stroke="#b91c1c" stroke-width="10" opacity="0.72"></path>
+
+          <text x="185" y="292" font-size="18" fill="#0f766e" font-weight="700">Flat minima</text>
+          <text x="150" y="74" font-size="15" fill="#5e6b76">training/testing 稍有 mismatch，loss 变化小</text>
+          <text x="610" y="292" font-size="18" fill="#b91c1c" font-weight="700">Sharp minima</text>
+          <text x="570" y="74" font-size="15" fill="#5e6b76">一平移就可能 loss 大涨</text>
+
+          <path d="M270 220 L305 220" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <path d="M665 105 L700 105" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"></path>
+          <text x="300" y="205" font-size="14" fill="#2563eb">testing shift</text>
+          <text x="700" y="91" font-size="14" fill="#2563eb">testing shift</text>
+        </svg>
+
+        <figure class="source-slide">
+          <img src="teaching-assets/lesson-04-05-training-fails/slide-27-flat-sharp-minima.png" alt="Original slide 27 showing flat minima and sharp minima and the large-batch generalization gap." loading="lazy">
+          <figcaption>PDF slide 27: flat minima / sharp minima 的原始讲义图，用来对照上面的简化示意。</figcaption>
+        </figure>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Flat minima</h3>
+            <p>像宽盆地。Training loss 和 testing loss 的地形有一点 mismatch 时，loss 不会剧烈变坏。</p>
+          </div>
+          <div class="card">
+            <h3>Sharp minima</h3>
+            <p>像窄峡谷。Training 上 loss 很低，但 testing 地形稍微偏移，loss 可能马上变高。</p>
+          </div>
+        </div>
+
+        <p>
+          讲义给出的直觉：small batch update 方向随机性更强，很窄的峡谷不容易困住它；
+          large batch 更稳定，反而可能顺着固定方向走进 sharp minima。
+        </p>
+        <div class="callout warning">
+          <strong>注意：</strong>这是一种解释，不是所有人都完全接受；讲义也把它标成仍可研究的问题。
+          你在实践中应把它当成理解 batch size 影响的直觉，而不是机械规则。
+        </div>
+
+        <h3>能不能同时要 large batch 的速度和 small batch 的效果</h3>
+        <p>
+          可以，但通常需要额外方法。Slide 列出的方向包括大 batch 训练 BERT、ResNet-50、ImageNet，
+          以及 large-batch generalization 的专门方法。实用理解是：large batch 不是不能用，
+          但不能只把 batch size 放大然后期待其他都不变。
+        </p>
+      </section>
+
+      <section id="momentum">
+        <h2>9. Momentum：把“惯性”放进 Gradient Descent</h2>
+        <p>
+          `Momentum` 的直觉来自物理世界：如果 error surface 是斜坡，参数像球。
+          球滚到 saddle point 或小 local minima 时，不一定马上停，因为它有惯性。
+        </p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Vanilla Gradient Descent</h3>
+            <div class="formula">theta(t+1) = theta(t) - eta * g(t)</div>
+            <p>每一步只听当前 gradient 的话。当前 gradient 为 0，就没有更新方向。</p>
+          </div>
+          <div class="card">
+            <h3>Gradient Descent + Momentum</h3>
+            <div class="formula">m(t+1) = lambda * m(t) - eta * g(t)<br>theta(t+1) = theta(t) + m(t+1)</div>
+            <p>每一步结合当前 negative gradient 与前一步 movement。</p>
+          </div>
+        </div>
+
+        <svg class="visual" viewBox="0 0 980 320" role="img" aria-label="momentum vector diagram">
+          <rect width="980" height="320" fill="#fbfcff"></rect>
+          <path d="M80 84 C180 250, 315 250, 410 148 C465 90, 520 92, 565 152 C635 245, 765 240, 895 80" fill="none" stroke="#17212b" stroke-width="5"></path>
+          <circle cx="330" cy="222" r="10" fill="#2563eb"></circle>
+          <text x="288" y="260" font-size="16" fill="#2563eb" font-weight="700">theta(t)</text>
+
+          <path d="M330 222 L392 178" stroke="#b91c1c" stroke-width="4" marker-end="url(#arrow)"></path>
+          <text x="358" y="166" font-size="15" fill="#b91c1c">negative gradient</text>
+
+          <path d="M330 222 L418 222" stroke="#0f766e" stroke-width="4" stroke-dasharray="8 6" marker-end="url(#arrow)"></path>
+          <text x="373" y="244" font-size="15" fill="#0f766e">last movement</text>
+
+          <path d="M330 222 L448 184" stroke="#6d28d9" stroke-width="5" marker-end="url(#arrow)"></path>
+          <text x="446" y="178" font-size="16" fill="#6d28d9" font-weight="700">real movement</text>
+
+          <circle cx="498" cy="150" r="8" fill="#b45309"></circle>
+          <text x="512" y="144" font-size="15" fill="#b45309">small gradient area</text>
+          <text x="566" y="222" font-size="16" fill="#5e6b76">Momentum 让你不是只看当前一步</text>
+        </svg>
+
+        <div class="grid two">
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-04-05-training-fails/slide-33-momentum-update.png" alt="Original slide 33 showing gradient descent with momentum update equations and movement vectors." loading="lazy">
+            <figcaption>PDF slide 33: momentum 的 update 公式与 movement 向量。</figcaption>
+          </figure>
+          <figure class="source-slide">
+            <img src="teaching-assets/lesson-04-05-training-fails/slide-35-momentum-small-gradient.png" alt="Original slide 35 showing momentum moving through a point where partial derivative is zero." loading="lazy">
+            <figcaption>PDF slide 35: momentum 在 small gradient / zero gradient 区域继续移动的原始示意。</figcaption>
+          </figure>
+        </div>
+
+        <ul>
+          <li>`m0 = 0`，第一步和 vanilla gradient descent 差不多。</li>
+          <li>从第二步开始，movement 由当前 gradient 与 previous movement 共同决定。</li>
+          <li>`lambda` 是 momentum 的 hyperparameter，像 learning rate 一样需要调。</li>
+          <li>`m` 也可以理解成过去所有 gradients 的 weighted sum。</li>
+          <li>即使当前 gradient 为 0，只要 previous movement 还在，参数仍可能继续移动。</li>
+        </ul>
+
+        <div class="callout">
+          <strong>实用结论：</strong>Momentum 可能帮你穿过 saddle point、plateau 或很浅的小 local minima。
+          它不是改变模型能力，而是改变 optimizer 在 loss landscape 上移动的方式。
+        </div>
+      </section>
+
+      <section id="practice">
+        <h2>10. 实践判断表</h2>
+        <p>
+          这节课落到实操上，你需要把“训练失败”拆成可观察现象，而不是一句“模型不 work”。
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>你看到什么</th>
+              <th>先怎么解释</th>
+              <th>这节课支持的动作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Training loss 很早就不降</td>
+              <td>Optimization 可能卡在 small gradient / critical point</td>
+              <td>检查 batch size、optimizer 是否带 momentum、learning curve 是否 plateau。</td>
+            </tr>
+            <tr>
+              <td>你想说“卡 local minima”</td>
+              <td>这句话不够精确</td>
+              <td>改说 critical point；如果要区分，需要 Hessian/eigenvalue 的局部地形判断。</td>
+            </tr>
+            <tr>
+              <td>Large batch 训练更快但结果差</td>
+              <td>速度与效果在 batch size 上有 trade-off</td>
+              <td>把 batch size 当 hyperparameter 调，不要只按 GPU 能塞多少来决定。</td>
+            </tr>
+            <tr>
+              <td>Small batch 训练曲线抖</td>
+              <td>Noisy gradient 是预期现象</td>
+              <td>不要只因抖动就判坏；noise 可能帮助 optimization 和 generalization。</td>
+            </tr>
+            <tr>
+              <td>当前 gradient 很小，但你希望继续下降</td>
+              <td>Vanilla gradient descent 只看当前 gradient，可能停住</td>
+              <td>Momentum 用 previous movement 给 optimizer 惯性。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout danger">
+          <strong>不要过度实践化的一点：</strong>Hessian 是本讲的理解工具，不是日常训练中第一件要算的东西。
+          真实训练里你通常先调 optimizer、learning rate、batch size、normalization 或 initialization。
+        </div>
+      </section>
+
+      <section id="quiz" class="quiz">
+        <h2>11. 自测：用这些问题检查你是否真的懂了</h2>
+        <details>
+          <summary>为什么 training loss 不降，不能马上说是 overfitting？</summary>
+          <p>Overfitting 是 training 好、testing/validation 差。Training loss 本身不降，说明 optimizer 没把训练集拟合好，优先看 optimization。</p>
+        </details>
+        <details>
+          <summary>Critical point、local minima、saddle point 的关系是什么？</summary>
+          <p>Critical point 是 gradient 为 0 的点。Local minima 和 saddle point 都可能是 critical point；差别是 saddle point 附近仍有下降方向。</p>
+        </details>
+        <details>
+          <summary>Hessian 的 eigenvalues 怎么判断局部地形？</summary>
+          <p>全正是 local minima，全负是 local maxima，有正有负是 saddle point。实际训练很少完整计算 Hessian，这里主要用于理解。</p>
+        </details>
+        <details>
+          <summary>为什么 small batch 的 noisy gradient 可能反而有帮助？</summary>
+          <p>每个 batch 形成的 loss function 不完全相同。一个 batch 上的 critical point，不一定是另一个 batch 上的 critical point，noise 可能帮助继续移动。</p>
+        </details>
+        <details>
+          <summary>Large batch 的问题一定是 overfitting 吗？</summary>
+          <p>不一定。如果 training 和 validation 都变差，是 optimization 问题。如果 training 差不多但 testing 变差，才更像 generalization gap。</p>
+        </details>
+        <details>
+          <summary>Momentum 和 vanilla gradient descent 的关键差别是什么？</summary>
+          <p>Vanilla gradient descent 只看当前 gradient。Momentum 还看 previous movement，所以当前 gradient 为 0 时仍可能继续移动。</p>
+        </details>
+      </section>
+
+      <section id="glossary">
+        <h2>12. 术语表</h2>
+        <div class="grid two">
+          <div class="term"><strong>Optimization</strong>：让 training loss 降下来、找到更好参数的过程。</div>
+          <div class="term"><strong>Gradient</strong>：loss 对参数的一阶变化方向；gradient descent 用它更新参数。</div>
+          <div class="term"><strong>Small Gradient</strong>：gradient 接近 0，参数更新很慢或停住。</div>
+          <div class="term"><strong>Critical Point</strong>：gradient 为 0 的点，可能是 local minima、local maxima 或 saddle point。</div>
+          <div class="term"><strong>Local Minima</strong>：附近所有方向 loss 都更高的局部最低点。</div>
+          <div class="term"><strong>Saddle Point</strong>：gradient 为 0，但有些方向能降低 loss 的点。</div>
+          <div class="term"><strong>Hessian</strong>：由二阶微分组成的矩阵，用于描述局部弯曲。</div>
+          <div class="term"><strong>Eigenvalue / Eigenvector</strong>：Hessian 的特征值/特征向量；负 eigenvalue 对应的方向可能降低 loss。</div>
+          <div class="term"><strong>Batch / Mini-batch</strong>：每次 update 使用的一小组训练数据。</div>
+          <div class="term"><strong>Epoch</strong>：所有 batches 被看过一次。</div>
+          <div class="term"><strong>Shuffle</strong>：每个 epoch 重新分 batch，使样本组合变化。</div>
+          <div class="term"><strong>Momentum</strong>：让本次 movement 结合 previous movement 与当前 gradient 的 optimizer 技巧。</div>
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Source Notes</h2>
+        <p class="footer-note">
+          本页基于本地材料整理：`slides/04-05-local-minima-batch-momentum-small-gradient-v7.pdf`、
+          `transcripts/04-local-minima-saddle-point.md`、`transcripts/05-batch-momentum.md`。
+          05 transcript 被纳入是因为这份 PDF 本身合并了 Lesson 04 和 Lesson 05 的 Batch/Momentum 内容。
+          PDF slide screenshots are local teaching assets under `teaching-assets/lesson-04-05-training-fails/`.
+        </p>
+        <p class="footer-note">
+          Slide 中列出的延伸论文包括：
+          <a href="https://arxiv.org/abs/1609.04836">Generalization Gap and Sharp Minima</a>、
+          <a href="https://arxiv.org/abs/1904.00962">Training BERT in 76 minutes</a>、
+          <a href="https://arxiv.org/abs/1711.04325">Training ResNet-50 on ImageNet in 15 Minutes</a>、
+          <a href="https://arxiv.org/abs/2001.02312">Stochastic Weight Averaging in Parallel</a>、
+          <a href="https://arxiv.org/abs/1708.03888">Large Batch Training of Convolutional Networks</a>、
+          <a href="https://arxiv.org/abs/1706.02677">Accurate, Large Minibatch SGD</a>。
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
